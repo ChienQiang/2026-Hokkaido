@@ -1,0 +1,3038 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東京紀行 2025</title>
+    
+    <!-- 1. Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@300;400;600;700&family=Zen+Old+Mincho:wght@400;600;700;900&family=Shippori+Mincho:wght@400;600;800&family=Yomogi&family=Rye&family=Courier+Prime&family=Michroma&family=Potta+One&family=Dela+Gothic+One&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Shippori+Mincho+B1:wght@700&family=New+Tegomin&family=Reggae+One&family=Kaisei+Decol:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 3. Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <!-- 4. Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- 5. React & Babel -->
+    <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+          "lucide-react": "https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0"
+        }
+      }
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+        :root {
+            --accent-color: #111111;
+            --floating-bg: #fdfbf7;
+            --floating-border: rgba(15, 23, 42, 0.12);
+            --floating-menu-bg: #f5f5f5;
+            --floating-menu-bg-active: #eaeaeb;
+            --floating-panel-bg: #fafafa;
+            --floating-panel-bg-active: #f1f1f3;
+            --floating-panel-border: rgba(31, 41, 55, 0.15);
+        }
+
+        /* 基礎風格 */
+        body { 
+            font-family: 'Shippori Mincho', 'Noto Serif JP', serif; 
+            background-color: #f9f8f6;
+            color: #2c2c2c;
+            background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        h1, h2, h3, .font-display { font-family: 'Zen Old Mincho', serif; }
+
+        /* --- STYLES (Color & Contrast Tuning) --- */
+
+        /* 🎬 今敏 (Kon) */
+        .style-kon {
+            font-family: 'Noto Sans JP', sans-serif !important;
+            background-color: #050505 !important; 
+            color: #f8fafc !important;
+            border: 1px solid #333;
+        }
+        .style-kon h3 { font-weight: 900; letter-spacing: 0.1em; text-shadow: 2px 0 #ff0000, -2px 0 #0000ff; color: #fff !important; }
+        .style-kon p, .style-kon span, .style-kon div { color: #e2e8f0 !important; }
+        .style-kon .kon-border::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #ff0000 0%, #0000ff 50%, #ff0000 100%);
+            animation: kon-glitch 2s infinite linear;
+        }
+        @keyframes kon-glitch { 0% { background-position: 0% 0%; } 100% { background-position: 100% 0%; } }
+
+        .style-naked {
+            background-color: #0f0b0c !important;
+            background-image: radial-gradient(circle at 25% 25%, rgba(237, 200, 98, 0.6), transparent 35%), radial-gradient(circle at 75% 45%, rgba(211, 67, 111, 0.5), transparent 40%);
+            color: #fef0de !important;
+            font-family: 'Share Tech Mono', monospace !important;
+            border: 2px solid #d97706 !important;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6) !important;
+        }
+        .style-naked h3 {
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #fef0de !important;
+        }
+        .style-naked p,
+        .style-naked span,
+        .style-naked div {
+            color: #fef0de !important;
+        }
+
+        .style-samon {
+            background-color: #1f2937 !important;
+            background-image: linear-gradient(120deg, rgba(255, 193, 7, 0.2), rgba(255, 71, 71, 0.1));
+            border: 2px solid rgba(249, 115, 22, 0.8) !important;
+            color: #fff7ed !important;
+            font-family: 'Kaisei Decol', serif !important;
+            box-shadow: 0 20px 30px rgba(15, 23, 42, 0.5) inset;
+        }
+        .style-samon h3 {
+            color: #fee2e2 !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+        }
+        .style-samon p,
+        .style-samon span,
+        .style-samon div {
+            color: #fee2e2 !important;
+        }
+
+        .style-newsea {
+            background-color: #fdf2f8 !important;
+            background-image: linear-gradient(160deg, rgba(14, 165, 233, 0.15), transparent 60%), radial-gradient(circle at top right, rgba(59, 130, 246, 0.3), transparent 40%);
+            border: 2px solid rgba(14, 165, 233, 0.6) !important;
+            color: #0f172a !important;
+            font-family: 'Zen Old Mincho', serif !important;
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.25);
+        }
+        .style-newsea h3 {
+            color: #0f172a !important;
+            letter-spacing: 0.18em;
+        }
+        .style-newsea p,
+        .style-newsea span,
+        .style-newsea div {
+            color: #0f172a !important;
+        }
+
+        .style-hunter {
+            background-color: #0f172a !important;
+            background-image: linear-gradient(140deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.6)), radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.2), transparent 50%);
+            border: 1px solid rgba(248, 250, 252, 0.25) !important;
+            color: #f8fafc !important;
+            font-family: 'Shippori Mincho', serif !important;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+        }
+        .style-hunter h3 {
+            letter-spacing: 0.15em;
+            color: #f8fafc !important;
+        }
+        .style-hunter p,
+        .style-hunter span,
+        .style-hunter div {
+            color: #e2e8f0 !important;
+        }
+
+        /* 🟡 草間彌生 (Kusama) */
+        .style-kusama {
+            background-color: #fbbf24 !important;
+            background-image: radial-gradient(black 30%, transparent 31%), radial-gradient(black 30%, transparent 31%) !important;
+            background-size: 20px 20px !important; background-position: 0 0, 10px 10px !important;
+            color: black !important; font-family: 'Noto Sans JP', sans-serif; font-weight: 900;
+            border: 4px solid black !important; border-radius: 0 !important;
+        }
+        .style-kusama .inner-card { background: white; border: 2px solid black; padding: 15px; box-shadow: 5px 5px 0 black; color: black !important; }
+        /* 標題強制底色，確保黑色點點背景下可讀 */
+        .style-kusama h3 { 
+            background: black; color: #fbbf24 !important; padding: 5px 10px; display: inline-block; 
+            box-shadow: 4px 4px 0 #fff;
+        }
+        .style-kusama p { color: #000 !important; font-weight: 700; }
+
+        /* 🍃 吉卜力 (Ghibli) */
+        .style-ghibli {
+            background-color: #f0fdf4 !important; color: #14532d !important;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E") !important;
+            font-family: 'Zen Old Mincho', serif; border: none !important; border-radius: 24px !important;
+            box-shadow: 0 10px 30px -10px rgba(22, 101, 52, 0.3) !important;
+        }
+        .style-ghibli h3 { font-family: 'Yomogi', cursive; color: #14532d !important; }
+        .style-ghibli p { color: #166534 !important; font-weight: 600; }
+
+        /* 🏡 Terrace House Karuizawa */
+        .style-terrace {
+            background: linear-gradient(120deg, #fefbf7 0%, #f2e3d4 40%, #d6c2ad 100%) !important;
+            color: #2b1f16 !important;
+            font-family: 'Noto Sans JP', sans-serif !important;
+            border: 1px solid rgba(95, 64, 39, 0.45) !important;
+            box-shadow: 0 16px 40px rgba(54, 34, 20, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+        }
+        .style-terrace h3 { letter-spacing: 0.16em; color: #3a2618 !important; text-transform: uppercase; }
+        .style-terrace p { color: #4e3624 !important; }
+
+        /* 🌲 Norwegian Forest */
+        .style-norway {
+            background: radial-gradient(circle at 25% 20%, rgba(85, 173, 136, 0.25), transparent 35%), linear-gradient(165deg, #0a1411 0%, #14322a 45%, #0a1411 100%) !important;
+            color: #dff7ef !important;
+            font-family: 'Zen Old Mincho', serif !important;
+            border: 1px solid rgba(140, 224, 196, 0.35) !important;
+            box-shadow: 0 18px 42px rgba(6, 12, 10, 0.65), inset 0 0 0 1px rgba(221, 246, 237, 0.08);
+        }
+        .style-norway h3 { color: #b7f7c7 !important; letter-spacing: 0.2em; }
+        .style-norway p { color: #d1f1e5 !important; }
+
+        /* 🩸 The Handmaiden */
+        .style-handmaiden {
+            background: radial-gradient(circle at 25% 18%, rgba(252, 165, 192, 0.28), transparent 36%), linear-gradient(150deg, #0a1120 0%, #1a2f45 70%);
+            color: #fef7f5 !important;
+            font-family: 'Shippori Mincho', serif !important;
+            border: 2px solid rgba(244, 114, 182, 0.5) !important;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 20px 42px rgba(6, 10, 22, 0.75);
+        }
+        .style-handmaiden h3 { color: #fbcfe8 !important; letter-spacing: 0.22em; text-transform: uppercase; }
+        .style-handmaiden p { color: #f5e8df !important; }
+
+        /* ☕ Blue Bottle Minimal */
+        .style-bluebottle {
+            background: linear-gradient(120deg, #f0f7ff 0%, #d9ecff 45%, #f0f7ff 100%) !important;
+            color: #0a2c55 !important;
+            font-family: 'Michroma', sans-serif !important;
+            border: 1px solid rgba(10, 44, 85, 0.35) !important;
+            box-shadow: 0 14px 30px rgba(10, 44, 85, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        }
+        .style-bluebottle h3 { letter-spacing: 0.24em; color: #0b3a7a !important; text-transform: uppercase; }
+        .style-bluebottle p { color: #1c4c78 !important; }
+
+        /* 🌊 海潮之聲 */
+        .style-umi {
+            background: linear-gradient(185deg, #e9f4ff 0%, #c7def9 40%, #fdf1e7 100%) !important;
+            color: #0f2f52 !important;
+            font-family: 'Zen Old Mincho', serif !important;
+            border: 1px solid rgba(37, 99, 235, 0.35) !important;
+            box-shadow: 0 16px 34px rgba(59, 130, 246, 0.22);
+        }
+        .style-umi h3 { color: #0d2454 !important; letter-spacing: 0.2em; }
+        .style-umi p { color: #1c3f6a !important; }
+
+        /* ✨ 流星之絆 */
+        .style-ryusei {
+            background: radial-gradient(circle at 20% 18%, rgba(255, 215, 94, 0.2), transparent 38%), linear-gradient(150deg, #070b19 0%, #0f1b34 60%, #070b19 100%) !important;
+            color: #e8efff !important;
+            font-family: 'Share Tech Mono', monospace !important;
+            border: 1px solid rgba(203, 213, 255, 0.35) !important;
+            box-shadow: 0 22px 46px rgba(4, 7, 16, 0.75), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+        .style-ryusei h3 { letter-spacing: 0.24em; color: #d5e2ff !important; text-transform: uppercase; }
+        .style-ryusei p { color: #dce5ff !important; }
+
+        /* 💿 First Love Vinyl */
+        .style-firstlove {
+            background: linear-gradient(135deg, #fff7fa 0%, #f8dbe7 40%, #f0bcd3 100%) !important;
+            color: #2c0f1f !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            border: 1px solid rgba(187, 89, 134, 0.4) !important;
+            box-shadow: 0 18px 40px rgba(150, 58, 103, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        }
+        .style-firstlove h3 { color: #5b1639 !important; letter-spacing: 0.18em; }
+        .style-firstlove p { color: #431129 !important; }
+
+        /* ⭕ Good Design Award */
+        .style-gooddesign {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #ffffff 100%) !important;
+            color: #1f1f1f !important;
+            font-family: 'Michroma', sans-serif !important;
+            border: 2px solid rgba(220, 38, 38, 0.55) !important;
+            box-shadow: 0 16px 36px rgba(31, 31, 31, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.85);
+        }
+        .style-gooddesign h3 { color: #b91c1c !important; letter-spacing: 0.22em; text-transform: uppercase; }
+        .style-gooddesign p { color: #343434 !important; }
+
+        /* 🏮 神隱少女 (Spirited Away) */
+        .style-spirited {
+            background-color: #881337 !important; /* Rose 900 */
+            color: #fef3c7 !important; /* Amber 100 */
+            font-family: 'Zen Old Mincho', serif !important;
+            border: 6px double #fbbf24 !important; /* Amber 400 */
+            background-image: 
+                radial-gradient(#9f1239 15%, transparent 16%), 
+                radial-gradient(#9f1239 15%, transparent 16%) !important;
+            background-size: 20px 20px !important;
+            background-position: 0 0, 10px 10px !important;
+            box-shadow: 0 15px 40px rgba(136, 19, 55, 0.6) !important;
+            border-radius: 12px !important;
+        }
+        .style-spirited h3 { 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+            border-bottom: 2px solid #fbbf24; 
+            padding-bottom: 15px; 
+            margin-bottom: 20px;
+            color: #fffbeb !important;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+        }
+        .style-spirited p, .style-spirited span, .style-spirited div { color: #fde68a !important; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-weight: 500; }
+
+        /* 📰 東京日日 (Retro) */
+        .style-retro {
+            background-color: #f5f5dc !important; color: #171717 !important; font-family: 'Shippori Mincho', serif;
+            border: 1px solid #444 !important; box-shadow: 10px 10px 0 rgba(0,0,0,0.1) !important; border-radius: 2px !important;
+        }
+        .style-retro h3 { border-bottom: 3px double #262626; padding-bottom: 5px; margin-bottom: 15px; font-weight: 900; color: #000 !important; }
+        .style-retro p { color: #1c1917 !important; font-weight: 600; }
+
+        /* 👧 奈良美智 (Nara) */
+        .style-nara {
+            background-color: #fffbeb !important; color: #57534e !important; font-family: 'Yomogi', cursive !important;
+            border: 2px dashed #d6d3d1 !important; border-radius: 30px !important; padding: 20px !important;
+        }
+        .style-nara h3 { color: #0ea5e9 !important; font-size: 2rem; }
+        .style-nara p { color: #44403c !important; font-size: 1.05em; font-weight: 600; }
+
+        /* 🏴‍☠️ 航海王 (One Piece) */
+        .style-onepiece {
+            background-color: #f3e5ab !important; color: #291d12 !important; font-family: 'Rye', serif !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4c596' fill-opacity='0.4'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'/%3E%3C/g%3E%3C/svg%3E") !important;
+            border: 8px double #4a3b2a !important; border-radius: 4px !important;
+        }
+        .style-onepiece h3 { 
+            font-size: 2.5rem; text-transform: uppercase; text-align: center; border-bottom: 2px solid #4a3b2a; margin-bottom: 20px; color: #291d12 !important;
+        }
+        .style-onepiece p { color: #3f2e18 !important; font-weight: 800; }
+
+        /* ⚔️ Style 7: 銀魂 (Gintama) */
+        .style-gintama {
+            background-color: #fff !important; color: #0f172a !important; font-family: 'Potta One', cursive !important;
+            background-image: repeating-linear-gradient(45deg, #e0f2fe 25%, transparent 25%, transparent 75%, #e0f2fe 75%, #e0f2fe), repeating-linear-gradient(45deg, #e0f2fe 25%, #fff 25%, #fff 75%, #e0f2fe 75%, #e0f2fe) !important;
+            background-size: 20px 20px !important; border: 4px solid #000 !important;
+        }
+        .style-gintama h3 { font-size: 2rem; transform: rotate(-2deg); background: white; border: 2px solid black; padding: 5px; box-shadow: 4px 4px 0 #0ea5e9; color: #000 !important; }
+        .style-gintama p { background: rgba(255,255,255,0.9); padding: 8px; color: #000 !important; font-weight: 700; border: 1px solid #e5e5e5; }
+
+        /* 🧪 Style 8: GAIAC 10 (Le Labo) */
+        .style-gaiac {
+            background-color: #e5e5e5 !important; color: #111 !important; font-family: 'Courier Prime', monospace !important;
+            border: 1px solid #111 !important; border-radius: 0 !important; padding: 40px !important; box-shadow: none !important;
+        }
+        .style-gaiac h3 { text-transform: uppercase; font-weight: 400; letter-spacing: 2px; font-size: 1.5rem; border-bottom: 1px solid #111; padding-bottom: 10px; margin-bottom: 20px; color: #000 !important;}
+        .style-gaiac p { color: #111 !important; font-weight: 600; }
+
+        /* 📐 Style 9: 三宅一生 (Miyake) */
+        .style-miyake {
+            background: #fff !important; color: #000 !important; font-family: 'Michroma', sans-serif !important;
+            border: none !important; box-shadow: 0 20px 50px rgba(0,0,0,0.1) !important;
+            background-image: linear-gradient(90deg, transparent 50%, rgba(0,0,0,0.05) 50%) !important; background-size: 10px 100% !important;
+        }
+        .style-miyake h3 { font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: #000 !important; }
+        .style-miyake p { color: #333 !important; font-weight: 500; }
+
+        /* 💿 Style 10: 東京威力科創 (TEL) */
+        .style-tel {
+            background-color: #001f3f !important; color: #ffffff !important; font-family: 'Share Tech Mono', monospace !important;
+            border: 1px solid #00aaff !important; box-shadow: 0 0 15px rgba(0, 170, 255, 0.4) !important;
+            background-image: linear-gradient(0deg, transparent 24%, rgba(0, 170, 255, .3) 25%, rgba(0, 170, 255, .3) 26%, transparent 27%, transparent 74%, rgba(0, 170, 255, .3) 75%, rgba(0, 170, 255, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 170, 255, .3) 25%, rgba(0, 170, 255, .3) 26%, transparent 27%, transparent 74%, rgba(0, 170, 255, .3) 75%, rgba(0, 170, 255, .3) 76%, transparent 77%, transparent) !important;
+            background-size: 50px 50px !important;
+        }
+        .style-tel h3 { text-shadow: 0 0 5px #00aaff; letter-spacing: 2px; color: #00aaff !important; }
+        .style-tel p { color: #e0f2fe !important; font-weight: 400; text-shadow: 0 0 2px #000; }
+
+        /* 📖 Style 11: 石黑一雄 (Ishiguro) */
+        .style-ishiguro {
+            background-color: #f3f0e9 !important; color: #2d2a24 !important; font-family: 'Cormorant Garamond', serif !important;
+            border: 1px solid #d4cbb8 !important; padding: 40px !important;
+        }
+        .style-ishiguro h3 { font-style: italic; font-weight: 600; font-size: 2.2rem; border-bottom: 1px solid #d4cbb8; margin-bottom: 20px; padding-bottom: 10px; color: #1c1917 !important; }
+        .style-ishiguro p { font-size: 1.1em; line-height: 1.8; color: #44403c !important; font-weight: 600; }
+
+        /* 📚 村上春樹（高易讀版） */
+        .style-haruki {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+            line-height: 1.85;
+            font-size: 16px;
+        }
+        .style-haruki h3 {
+            letter-spacing: 0.08em;
+            text-transform: none;
+            color: #0f172a !important;
+            text-shadow: none;
+            font-weight: 800;
+        }
+        .style-haruki p,
+        .style-haruki span,
+        .style-haruki div {
+            color: #111827 !important;
+        }
+        /* 🌈 Style 12: 原宿 (Harajuku) */
+        .style-harajuku {
+            background-color: #ffccff !important; color: #330066 !important; font-family: 'Dela Gothic One', cursive !important;
+            border: 6px dashed #00ffff !important; border-radius: 20px !important;
+            box-shadow: 8px 8px 0 #ff00cc !important;
+        }
+        .style-harajuku h3 { text-shadow: 2px 2px 0 #fff; transform: rotate(-3deg); background: #ffff00; padding: 5px; display: inline-block; color: #ff0066 !important; }
+        .style-harajuku p { font-weight: bold; color: #3300cc !important; background: rgba(255,255,255,0.5); padding: 5px; }
+
+        /* 🌲 Style 13: 大江建三郎 (Oe) */
+        .style-oe {
+            background-color: #2c3328 !important; color: #e2e8d8 !important; font-family: 'Shippori Mincho B1', serif !important;
+            border-left: 10px solid #5f6b55 !important; border-radius: 0 !important;
+        }
+        .style-oe h3 { font-weight: 900; letter-spacing: 0.1em; border-bottom: 1px solid #5f6b55; padding-bottom: 15px; margin-bottom: 20px; color: #ffffff !important; }
+        .style-oe p { color: #f0fdf4 !important; font-weight: 500; }
+
+        /* 🎓 Style 14: 東京大學 (Todai) */
+        .style-todai {
+            background-color: #fffbeb !important; color: #1a1a1a !important; 
+            font-family: 'Zen Old Mincho', serif !important;
+            border: 4px solid #7f1d1d !important; box-shadow: 10px 10px 0 #eab308 !important; border-radius: 4px !important;
+        }
+        .style-todai h3 { font-weight: 900; border-bottom: 2px solid #7f1d1d; padding-bottom: 10px; margin-bottom: 20px; color: #7f1d1d !important; }
+        .style-todai p { color: #450a0a !important; font-weight: 600; }
+
+        /* 🦅 Style 15: 高市早苗 (Sanae) */
+        .style-sanae {
+            background-color: #1e3a8a !important; color: #ffffff !important; 
+            font-family: 'Noto Sans JP', sans-serif !important;
+            border: 2px solid #fcd34d !important; border-radius: 0 !important;
+            background-image: linear-gradient(45deg, #172554 25%, transparent 25%, transparent 75%, #172554 75%, #172554), linear-gradient(45deg, #172554 25%, transparent 25%, transparent 75%, #172554 75%, #172554) !important;
+            background-size: 20px 20px !important; background-position: 0 0, 10px 10px !important;
+        }
+        .style-sanae h3 { font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; color: #fcd34d !important; border-bottom: 4px solid #fcd34d; }
+        .style-sanae p, .style-sanae span, .style-sanae div { color: #fefce8 !important; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+
+        /* 🌉 Style 16: 勝鬨橋 (Kachidoki) */
+        .style-kachidoki {
+            background-color: #334155 !important; color: #e2e8f0 !important;
+            font-family: 'Share Tech Mono', monospace !important;
+            border: 4px dashed #94a3b8 !important; border-radius: 10px !important;
+            box-shadow: inset 0 0 20px #0f172a !important;
+        }
+        .style-kachidoki h3 { text-shadow: 0 0 10px #38bdf8; color: #38bdf8 !important; font-weight: 400; }
+        .style-kachidoki p { color: #cbd5e1 !important; }
+
+        /* 🏢 Style 17: 住友商事 (Sumitomo) */
+        .style-sumitomo {
+            background-color: #064e3b !important; color: #ffffff !important;
+            font-family: 'Noto Serif JP', serif !important;
+            border: 3px solid #f59e0b !important; border-radius: 2px !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important;
+        }
+        .style-sumitomo h3 { font-weight: 700; border-bottom: 1px solid #f59e0b; padding-bottom: 15px; margin-bottom: 20px; color: #f59e0b !important; letter-spacing: 0.1em; }
+        .style-sumitomo p { color: #ecfdf5 !important; font-weight: 400; }
+
+        /* 🕵️ Style 18: 東野圭吾 (Higashino) */
+        .style-higashino {
+            background-color: #171717 !important; color: #d4d4d4 !important;
+            font-family: 'Shippori Mincho', serif !important;
+            border-left: 1px solid #404040; padding: 30px !important;
+        }
+        .style-higashino h3 { color: #ffffff !important; font-weight: 700; letter-spacing: 0.15em; border-bottom: 1px solid #a3a3a3; padding-bottom: 10px; }
+        .style-higashino p { color: #e5e5e5 !important; font-size: 0.95em; line-height: 2; font-weight: 500; }
+
+        /* 🧟 Style 19: 東京喰種 (Tokyo Ghoul) */
+        .style-ghoul {
+            background-color: #000000 !important; color: #ff0000 !important;
+            font-family: 'Reggae One', cursive !important;
+            border: 3px solid #ff0000 !important;
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 60%), repeating-linear-gradient(45deg, rgba(20, 0, 0, 0.5) 0px, rgba(20, 0, 0, 0.5) 2px, transparent 2px, transparent 4px);
+        }
+        .style-ghoul h3 { font-size: 2.5rem; color: #ffffff !important; text-shadow: 2px 2px 0 #ff0000, -1px -1px 0 #550000; transform: skew(-5deg); }
+        .style-ghoul p { color: #fca5a5 !important; font-family: 'Noto Sans JP', sans-serif; font-weight: 700; text-shadow: 1px 1px 0 #000; }
+        .style-ghoul .kon-border::before { background: linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%); }
+
+        /* ✏️ Style 20: 松本大洋 (Matsumoto) - 東京日日 */
+        .style-matsumoto {
+            background-color: #f2f2f2 !important; /* Paper white */
+            background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23d4d4d4' fill-opacity='0.4'/%3E%3C/svg%3E") !important;
+            color: #111 !important;
+            font-family: 'Kaisei Decol', serif !important;
+            border: 3px solid #222 !important;
+            border-radius: 4px 12px 4px 12px !important;
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.1) !important; /* 修正：陰影淡化 */
+        }
+        .style-matsumoto h3 { font-weight: 700; border-bottom: 2px dashed #444; padding-bottom: 10px; margin-bottom: 20px; color: #000 !important; }
+        .style-matsumoto p { font-size: 1.05em; color: #1f2937 !important; font-weight: 600; }
+
+        /* 🗼 Style 21: 東京都同情塔 (Sympathy Tower) */
+        .style-sympathy {
+            background-color: #e2e8f0 !important;
+            background-image: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%) !important;
+            color: #0f172a !important;
+            font-family: 'Michroma', sans-serif !important;
+            border: 1px solid #fff !important;
+            border-radius: 40px 0 40px 0 !important;
+            box-shadow: 0 10px 40px -10px rgba(71, 85, 105, 0.5) !important;
+        }
+        .style-sympathy h3 { color: #1e293b !important; text-transform: uppercase; letter-spacing: 0.1em; }
+        .style-sympathy p { color: #334155 !important; font-family: 'Noto Sans JP', sans-serif; font-weight: 600; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .leaflet-container { font-family: 'Shippori Mincho', serif; z-index: 0; background: #f6f5f3; filter: contrast(0.95) sepia(0.05); }
+        .custom-div-icon { background: transparent; border: none; }
+        .map-label { background: rgba(255, 255, 255, 0.95); border: 1px solid #d1d5db; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); font-family: 'Zen Old Mincho', serif; font-weight: 700; font-size: 13px; color: #374151; padding: 4px 8px; border-radius: 2px; }
+        .leaflet-tooltip-left:before, .leaflet-tooltip-right:before, .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before { border: none !important; }
+        ruby { font-family: 'Zen Old Mincho', serif; }
+        rt { font-family: 'Shippori Mincho', serif; font-size: 0.55em; opacity: 0.7; letter-spacing: 0.05em; color: inherit; }
+
+        /* !IMPORTANT: 強制修正 Vocabulary 區塊易讀性 */
+        .vocab-card { background-color: #ffffff !important; border: 1px solid #e5e7eb !important; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; }
+        .vocab-card h4 { color: #94a3b8 !important; }
+        .vocab-card .vocab-term { color: #1f2937 !important; text-shadow: none !important; }
+        .vocab-card .vocab-reading { color: #6b7280 !important; text-shadow: none !important; }
+        .vocab-card .vocab-desc { color: #4b5563 !important; text-shadow: none !important; }
+        .vocab-card .vocab-badge { background-color: #f9fafb !important; color: #6b7280 !important; border-color: #e5e7eb !important; text-shadow: none !important; }
+
+        /* --- Floating FAB --- */
+        .floating-menu {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 2rem;
+            z-index: 9999;
+            font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+            background: var(--floating-bg);
+            border-radius: 999px;
+            border: 1px solid var(--floating-border);
+            padding: 0.25rem;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+        }
+
+        .floating-fab-button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 1px solid #dcdada;
+            cursor: pointer;
+            background: #fdfbf7;
+            color: #292524;
+            box-shadow: 0 10px 28px rgba(41, 37, 36, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background 0.3s ease,
+                border-color 0.3s ease;
+        }
+
+        .floating-fab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(41, 37, 36, 0.25);
+            background: #f5f1e9;
+        }
+
+        .floating-fab-button.is-open {
+            background: #e4e7ec;
+            color: #1f2937;
+            border-color: #cfd3da;
+            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.25);
+        }
+
+        .fab-icon {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .fab-icon span {
+            width: 24px;
+            height: 2px;
+            border-radius: 1px;
+            background: #4b5563;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
+        }
+
+        .floating-fab-button.is-open .fab-icon span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+            background: #1f2937;
+        }
+
+        .floating-fab-button.is-open .fab-icon span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .floating-fab-button.is-open .fab-icon span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
+            background: #1f2937;
+        }
+
+        /* --- 主選單面板 --- */
+        .floating-menu-panel {
+            position: absolute;
+            right: 0;
+            bottom: 64px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            padding: 1.1rem 1.25rem;
+            background: var(--floating-menu-bg);
+            border-radius: 18px;
+            border: 1px solid var(--floating-border);
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.16);
+            font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(12px);
+            transition: opacity 0.18s ease, transform 0.18s ease, background 0.3s ease, border-color 0.3s ease;
+            min-width: 270px;
+            max-width: 360px;
+        }
+
+        .floating-menu-panel.is-open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            background: var(--floating-menu-bg-active);
+            border-color: rgba(31, 41, 55, 0.25);
+        }
+
+        .floating-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            border: none;
+            background: transparent;
+            color: #1f1f1f;
+            font-size: 16px;
+            padding: 0.65rem 0.8rem;
+            border-radius: 999px;
+            cursor: pointer;
+            text-align: left;
+            white-space: nowrap;
+            font-family: 'Noto Sans JP', 'Shippori Mincho', serif;
+        }
+
+        .floating-menu-item span.icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .floating-menu-item span.label {
+            font-family: 'Noto Sans JP', 'Shippori Mincho', serif;
+            flex: 1;
+        }
+
+        .floating-menu-item:hover {
+            background: rgba(149, 129, 88, 0.08);
+        }
+
+        /* --- 浮出小面板共用樣式（緊急資訊 / 熊的情報） --- */
+        .floating-panel {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 80px;
+            width: 320px;
+            max-width: calc(100vw - 2rem);
+            background: var(--floating-panel-bg);
+            color: #1f1f1f;
+            border-radius: 18px;
+            border: 1px solid var(--floating-panel-border);
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.2);
+            padding: 1rem 1rem 1.1rem;
+            font-size: 14px;
+            display: none;
+            z-index: 9998;
+            max-height: 80vh;
+            overflow: hidden;
+            font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+            flex-direction: column;
+            gap: 0.9rem;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .floating-panel.is-open {
+            display: flex;
+            background: var(--floating-panel-bg-active);
+            border-color: rgba(31, 41, 55, 0.2);
+        }
+
+        .floating-panel.dark-panel {
+            background: var(--floating-bg);
+            color: #1f1f1f;
+            padding: 0.75rem;
+            border-color: var(--floating-border);
+        }
+
+        .floating-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .floating-panel-header-title,
+        .floating-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .floating-panel-title i {
+            color: #fbbf24;
+        }
+
+        .floating-panel-hero {
+            margin-bottom: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .floating-panel-hero img {
+            width: 100%;
+            display: block;
+        }
+
+        .floating-panel-body {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-right: 0.35rem;
+            padding-left: 0.35rem;
+        }
+
+        .checklist-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.18);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .checklist-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .checklist-card-header span {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .checklist-section {
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
+            padding-top: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checklist-section h4 {
+            margin: 0;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            color: #1f2937;
+            text-transform: uppercase;
+        }
+
+        .checklist-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .checklist-items label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 13px;
+            color: #111827;
+        }
+
+        .checklist-items input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #2952ff;
+        }
+
+        .checklist-note {
+            font-size: 11px;
+            color: #4b5563;
+        }
+
+        .fp-section-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .fp-section-title i {
+            font-size: 14px;
+            color: #93c5fd;
+        }
+
+        .fp-list {
+            margin: 0;
+            padding-left: 1.2em;
+            list-style: disc;
+        }
+
+        .fp-list li {
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+
+        .fp-reading {
+            display: block;
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .fp-reading-inline {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .floating-panel-close {
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            color: #374151;
+            cursor: pointer;
+            font-size: 20px;
+            font-family: 'Noto Sans JP', 'Shippori Mincho', serif;
+            line-height: 1;
+            padding: 8px;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+        }
+
+        .floating-panel-close:hover {
+            background: #f8fafc;
+            color: #111827;
+        }
+
+        .floating-textarea {
+            width: 100%;
+            min-height: 90px;
+            resize: vertical;
+            border-radius: 10px;
+            border: 1px solid #e7e5e4;
+            background: #fff;
+            color: #292524;
+            font-size: 13px;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+
+        .floating-textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .floating-sos-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.2rem 0 0.3rem;
+        }
+
+        .floating-sos-list li {
+            margin-bottom: 0.25rem;
+            line-height: 1.4;
+        }
+
+        .floating-sos-label {
+            color: #6b7280;
+            margin-right: 0.25rem;
+        }
+
+        .floating-sos-note {
+            margin-top: 0.25rem;
+            color: #6b7280;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .sos-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.25rem 0 0.5rem;
+            font-size: 11px;
+            color: #4b5563;
+            gap: 0.5rem;
+        }
+
+        .sos-page-btn {
+            flex: 1;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            color: #374151;
+            padding: 4px 6px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .sos-page-btn.is-active {
+            background: #0f172a;
+            color: #fff;
+            border-color: #0f172a;
+        }
+
+        .sos-page {
+            display: none;
+        }
+
+        .sos-page.is-active {
+            display: block;
+        }
+
+        .bear-note {
+            font-size: 12px;
+            line-height: 1.55;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 6px 0;
+            white-space: normal;
+        }
+
+        .bear-note a {
+            color: #4fa3ff;
+            text-decoration: underline;
+        }
+
+        .bear-note a:hover {
+            opacity: 0.7;
+        }
+
+        .map-toggle-btn {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: rgba(255,255,255,0.92);
+            color: #1f2937;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+        }
+
+        .map-toggle-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+            background: #ffffff;
+        }
+
+        .hero-title-main {
+            color: var(--accent-color);
+        }
+
+        /* 日期列 */
+        .day-tabs {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: max-content;
+            gap: 12px;
+            padding: 10px 0 14px;
+            flex-wrap: nowrap;
+            font-family: 'Zen Old Mincho', serif;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .day-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 日期按鈕 */
+        .day-tab {
+            flex: 0 0 auto;
+            width: 72px;
+            height: 72px;
+            padding: 8px;
+            border-radius: 12px;
+            font-family: 'Zen Old Mincho', serif;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.2;
+            background: var(--day-bg, #f5f5f5);
+            border: 1px solid var(--day-border, #d4d4d8);
+            color: var(--day-fg, #374151);
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .day-tab.is-active {
+            background: var(--day-active-bg, var(--day-fg));
+            border-color: var(--day-active-border, var(--day-fg));
+            color: var(--day-active-fg, #fff);
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.15);
+        }
+
+        /* 日別色調（低彩灰階化） */
+        .day-tab[data-day="intro"] {
+            --day-bg: #d9f1f5;
+            --day-border: #b9d8de;
+            --day-fg: #0f4c5c;
+            --day-active-bg: #0f4c5c;
+            --day-active-border: #0a3642;
+            --day-active-fg: #f8fbfc;
+        }
+        .day-tab[data-day="1219"] {
+            --day-bg: #e6e9ed;
+            --day-border: #cdd3da;
+            --day-fg: #1f2937;
+            --day-active-bg: #475569;
+            --day-active-border: #334155;
+            --day-active-fg: #f8fafc;
+        }
+        .day-tab[data-day="1220"] {
+            --day-bg: #e8e4df;
+            --day-border: #d2cbc3;
+            --day-fg: #3b322d;
+            --day-active-bg: #6b5f55;
+            --day-active-border: #53453d;
+            --day-active-fg: #fdfbf7;
+        }
+        .day-tab[data-day="1221"] {
+            --day-bg: #dcebe2;
+            --day-border: #bed7c7;
+            --day-fg: #1f4c39;
+            --day-active-bg: #2f7358;
+            --day-active-border: #245a45;
+            --day-active-fg: #f5fbf8;
+        }
+        .day-tab[data-day="1222"] {
+            --day-bg: #e7e3ef;
+            --day-border: #cfc9dd;
+            --day-fg: #3d2f58;
+            --day-active-bg: #5b4a82;
+            --day-active-border: #463a65;
+            --day-active-fg: #f8f6fc;
+        }
+        .day-tab[data-day="1223"] {
+            --day-bg: #dbe8f4;
+            --day-border: #c3d5e7;
+            --day-fg: #1f3d58;
+            --day-active-bg: #3b6a8f;
+            --day-active-border: #2c506d;
+            --day-active-fg: #f4f8fc;
+        }
+
+        .day-panel-container {
+            position: relative;
+            overflow: hidden;
+            min-height: 280px;
+        }
+        .day-panel-container.swipe-enabled {
+            cursor: grab;
+            user-select: none;
+        }
+        .day-panel-container.swipe-enabled:active {
+            cursor: grabbing;
+        }
+
+        .public-checklist {
+            background: linear-gradient(180deg, #ffffff, #f9f8f6);
+        }
+
+        /* 基本狀態：先看不到、待命中 */
+        .day-panel {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transform: translateX(0);
+            pointer-events: none;
+            transition:
+                opacity 0.45s ease,
+                transform 0.45s cubic-bezier(.22,.61,.36,1);
+        }
+
+        /* 顯示中的那一天 */
+        .day-panel.is-active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        /* 進場起始位置（新的一天從這裡開始） */
+        .day-panel.slide-in-from-right {
+            transform: translateX(24px);
+        }
+
+        .day-panel.slide-in-from-left {
+            transform: translateX(-24px);
+        }
+
+        /* 🪟 Intro Windows 95 Screen */
+        .intro-screen {
+            background: radial-gradient(circle at 15% 15%, #00b6b6 0%, #005f5f 65%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
+        }
+        .w95-window {
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            box-shadow: 12px 12px 0 rgba(4, 30, 66, 0.35);
+            max-width: 560px;
+            margin: 0 auto;
+            font-family: 'Courier Prime', monospace;
+        }
+        .w95-titlebar {
+            background: linear-gradient(90deg, #0f62fe, #0040c1);
+            color: #fff;
+            padding: 0.55rem 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid #fff;
+        }
+        .w95-title-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            margin-left: 3px;
+            border-radius: 999px;
+            background: #fff;
+        }
+        .w95-body {
+            background: #e5e5e5;
+            padding: 1.25rem;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+        .w95-headline {
+            margin: 0 0 0.35rem;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .w95-subhead {
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            color: #0f172a;
+        }
+        .w95-itinerary {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .w95-itinerary-item {
+            background: #fff;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #9ca3af;
+            border-radius: 4px;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+        .w95-itinerary-date {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .w95-itinerary-title {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 0.1rem;
+        }
+        .w95-itinerary-location {
+            font-size: 0.7rem;
+            color: #475569;
+        }
+        .w95-button {
+            margin-top: 0.75rem;
+            width: 100%;
+            padding: 0.65rem;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            background: linear-gradient(180deg, #f0f0f0, #d7d7d7);
+            color: #0f172a;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 #909090;
+        }
+        .w95-button:hover {
+            box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 #909090, 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+        .w95-itinerary::-webkit-scrollbar {
+            width: 6px;
+        }
+        .w95-itinerary::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 999px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                font-size: 15px;
+            }
+            .floating-menu {
+                right: 1rem;
+                bottom: 2rem;
+            }
+            .floating-panel {
+                right: 1rem;
+                bottom: 76px;
+            }
+            .floating-panel,
+            .floating-sos-note,
+            .bear-note,
+            .day-tab {
+                font-size: 14px;
+            }
+            .floating-panel-header-title span {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body data-bear-feed="https://jsonplaceholder.typicode.com/posts/1">
+    
+    <div id="root"></div>
+
+    <script type="text/babel" data-type="module">
+        import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+        import { createRoot } from 'react-dom/client';
+        import { 
+            Plane, Train, Hotel, MapPin, Camera, ShoppingBag, Home, Clock, 
+            ArrowRight, Utensils, X, Map as MapIcon, Ticket, List, ExternalLink, 
+            Cloud, Sun, CloudSnow, CloudRain, Info, Shirt, Tag, 
+            Compass, BookOpen, Zap, Users, ListFilter, AlertTriangle, Lightbulb, Briefcase, TrendingUp, Languages, Gift, Landmark, Moon, Palette, Anchor, Skull
+        } from 'lucide-react';
+
+        // --- 地圖組件 ---
+        const DailyMapView = ({ route, dayIndex }) => {
+            const mapRef = useRef(null);
+            const mapInstanceRef = useRef(null);
+            const defaultBoundsRef = useRef(null);
+            const [interactive, setInteractive] = useState(false);
+            const [activeLandmarkKey, setActiveLandmarkKey] = useState(null);
+            const [boundsReady, setBoundsReady] = useState(false);
+
+            const haversineKm = (a, b) => {
+                const toRad = (deg) => (deg * Math.PI) / 180;
+                const [lat1, lon1] = a;
+                const [lat2, lon2] = b;
+                const R = 6371; // km
+                const dLat = toRad(lat2 - lat1);
+                const dLon = toRad(lon2 - lon1);
+                const h =
+                    Math.sin(dLat / 2) ** 2 +
+                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+                return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+            };
+
+            const totalDistanceKm = useMemo(() => {
+                if (!route?.path || route.path.length < 2) return 0;
+                return route.path.slice(1).reduce((sum, coord, idx) => {
+                    return sum + haversineKm(route.path[idx], coord);
+                }, 0);
+            }, [route]);
+
+            const setMapInteractivity = (map, enabled) => {
+                if (!map) return;
+                const toggle = enabled ? 'enable' : 'disable';
+                ['dragging', 'scrollWheelZoom', 'doubleClickZoom', 'boxZoom', 'keyboard', 'touchZoom', 'tap']
+                    .forEach((feature) => {
+                        if (map[feature] && map[feature][toggle]) {
+                            map[feature][toggle]();
+                        }
+                    });
+            };
+
+            useEffect(() => {
+                if (!mapRef.current) return;
+                if (typeof L === 'undefined') return;
+
+                if (!mapInstanceRef.current) {
+                    mapInstanceRef.current = L.map(mapRef.current, {
+                        zoomControl: false, attributionControl: false, scrollWheelZoom: false 
+                    });
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                        subdomains: 'abcd', maxZoom: 19
+                    }).addTo(mapInstanceRef.current);
+                    setMapInteractivity(mapInstanceRef.current, false);
+                }
+
+                const map = mapInstanceRef.current;
+                const refreshMapSize = () => setTimeout(() => { map.invalidateSize(); }, 100);
+
+                map.eachLayer((layer) => {
+                    if (layer instanceof L.Polyline || layer instanceof L.Marker || layer instanceof L.CircleMarker) { map.removeLayer(layer); }
+                });
+
+                if (!route || route.path.length === 0) {
+                    defaultBoundsRef.current = null;
+                    setBoundsReady(false);
+                    setActiveLandmarkKey(null);
+                    refreshMapSize();
+                    return;
+                }
+
+                setActiveLandmarkKey(null);
+                const colors = ['#0f172a', '#44403c', '#064e3b', '#4c1d95', '#0c4a6e'];
+                const color = colors[dayIndex % colors.length];
+
+                L.polyline(route.path, { color: color, weight: 2.5, opacity: 0.8, dashArray: '6, 8', lineCap: 'square' }).addTo(map);
+                if (route.stops) {
+                    route.stops.forEach(stop => {
+                        L.circleMarker(stop.coord, { radius: 4, fillColor: '#fff', color: color, weight: 2, fillOpacity: 1 })
+                        .bindTooltip(stop.name, { permanent: true, direction: 'bottom', offset: [0, 6], className: 'map-label' })
+                        .addTo(map);
+                    });
+                }
+                if (route.landmarks) {
+                    route.landmarks.forEach((spot) => {
+                        const icon = L.divIcon({
+                            className: 'custom-div-icon',
+                            html: `<div style="font-size:18px;">${spot.emoji}</div>`
+                        });
+                        L.marker(spot.coord, { icon })
+                            .bindTooltip(spot.label, { direction: 'top', offset: [0, -8], className: 'map-label' })
+                            .addTo(map);
+                    });
+                }
+                const bounds = L.latLngBounds(route.path.concat(route.landmarks?.map(l => l.coord) || []));
+                if (bounds && bounds.isValid()) {
+                    defaultBoundsRef.current = bounds;
+                    map.fitBounds(bounds, { padding: [60, 60] });
+                    setBoundsReady(true);
+                } else {
+                    defaultBoundsRef.current = null;
+                    setBoundsReady(false);
+                }
+
+                refreshMapSize();
+            }, [route]);
+
+            useEffect(() => {
+                setMapInteractivity(mapInstanceRef.current, interactive);
+                setTimeout(() => { mapInstanceRef.current?.invalidateSize(); }, 80);
+            }, [interactive]);
+
+            const handleLandmarkClick = (spot, key) => {
+                const map = mapInstanceRef.current;
+                if (!map) return;
+                setActiveLandmarkKey(key);
+                map.flyTo(spot.coord, 15, { duration: 0.9 });
+            };
+
+            const handleOverviewClick = () => {
+                const map = mapInstanceRef.current;
+                if (!map || !defaultBoundsRef.current) return;
+                setActiveLandmarkKey(null);
+                map.fitBounds(defaultBoundsRef.current, { padding: [60, 60], duration: 0.9 });
+            };
+
+            const landmarkItems = route?.landmarks || [];
+            const hasLandmarks = landmarkItems.length > 0;
+            const overviewEnabled = boundsReady && Boolean(defaultBoundsRef.current);
+
+            return (
+                <div className="space-y-3">
+                    <div className="relative">
+                        <div ref={mapRef} className="h-[350px] w-full rounded-md border border-stone-200 z-0 relative shadow-sm style-matsumoto" />
+                        <button
+                            className="map-toggle-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setInteractive((prev) => !prev);
+                            }}
+                            aria-label={interactive ? "鎖定地圖" : "啟用地圖"}
+                        >
+                            {interactive ? "🔒 點一下鎖定地圖" : "👉 點一下啟用地圖"}
+                        </button>
+                    </div>
+                    <div className="grid sm:grid-cols-3 gap-2 text-xs text-stone-600">
+                        <div className="flex items-center gap-2 bg-white border border-stone-200 px-3 py-2 rounded">
+                            <Compass size={14} className="text-stone-500" />
+                            <div className="flex flex-col leading-tight">
+                                <span className="text-[10px] uppercase tracking-[0.15em] text-stone-400">Distance</span>
+                                <span className="font-semibold text-stone-800">{totalDistanceKm.toFixed(1)} km</span>
+                            </div>
+                        </div>
+                        <div className="sm:col-span-2 bg-white border border-stone-200 px-3 py-2 rounded">
+                            <div className="flex items-center justify-between mb-2 text-[10px] uppercase tracking-[0.15em] text-stone-400">
+                                <span>Nearby Landmarks</span>
+                                <button
+                                    type="button"
+                                    onClick={handleOverviewClick}
+                                    disabled={!overviewEnabled}
+                                    className={`text-[10px] font-semibold tracking-[0.3em] uppercase transition-colors ${overviewEnabled ? 'text-stone-600 hover:text-stone-900' : 'text-stone-300 cursor-not-allowed'}`}
+                                >
+                                    Overview
+                                </button>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                                {hasLandmarks ? (
+                                    landmarkItems.map((spot, idx) => {
+                                        const landmarkKey = `${spot.label}-${idx}`;
+                                        const isActive = activeLandmarkKey === landmarkKey;
+                                        return (
+                                            <button
+                                                key={landmarkKey}
+                                                type="button"
+                                                onClick={() => handleLandmarkClick(spot, landmarkKey)}
+                                                aria-pressed={isActive}
+                                                className={`inline-flex items-center gap-1 border px-2 py-1 rounded-full text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-300 ${isActive ? 'bg-stone-200 border-stone-400 text-stone-900' : 'bg-stone-50 border-stone-200 text-stone-700'}`}
+                                            >
+                                                <span>{spot.emoji}</span>
+                                                <span className="leading-none">{spot.label}</span>
+                                            </button>
+                                        );
+                                    })
+                                ) : (
+                                    <span className="text-stone-400 text-[11px]">No nearby notes added.</span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const WeatherIcon = ({ type, size = 14, className = '' }) => {
+            switch(type) {
+            case 'sun': return <Sun size={size} className={`text-amber-600 ${className}`} />;
+            case 'cloud': return <Cloud size={size} className={`text-stone-400 ${className}`} />;
+            case 'snow': return <CloudSnow size={size} className={`text-cyan-600 ${className}`} />;
+            case 'rain': return <CloudRain size={size} className={`text-blue-600 ${className}`} />;
+            default: return <Sun size={size} className={`text-amber-600 ${className}`} />;
+            }
+        };
+
+        const introHero = {
+            date: "序曲",
+            day: "Intro",
+            title: "Intro 序曲",
+            subtitle: "Press Start to launch the Tokyo Chronicles",
+            location: "東京紀行 2025",
+            theme: { main: "text-cyan-900", sub: "text-cyan-500", btn: "bg-cyan-700" }
+        };
+        const tabPalette = {
+            'bg-sky-800': { bg: 'rgba(7,89,133,0.12)', border: 'rgba(7,89,133,0.35)', fg: '#075985', activeBg: '#075985', activeBorder: '#0c4a6e', activeFg: '#f8fafc' },
+            'bg-sky-700': { bg: 'rgba(3,105,161,0.12)', border: 'rgba(3,105,161,0.35)', fg: '#0369a1', activeBg: '#0369a1', activeBorder: '#075985', activeFg: '#f8fafc' },
+            'bg-emerald-800': { bg: 'rgba(6,95,70,0.12)', border: 'rgba(6,95,70,0.32)', fg: '#065f46', activeBg: '#065f46', activeBorder: '#064e3b', activeFg: '#ecfdf3' },
+            'bg-emerald-700': { bg: 'rgba(4,120,87,0.12)', border: 'rgba(4,120,87,0.32)', fg: '#047857', activeBg: '#047857', activeBorder: '#065f46', activeFg: '#ecfdf3' },
+            'bg-rose-800': { bg: 'rgba(159,18,57,0.12)', border: 'rgba(159,18,57,0.32)', fg: '#9f1239', activeBg: '#9f1239', activeBorder: '#881337', activeFg: '#fff1f2' },
+            'bg-amber-700': { bg: 'rgba(180,83,9,0.14)', border: 'rgba(180,83,9,0.36)', fg: '#b45309', activeBg: '#b45309', activeBorder: '#92400e', activeFg: '#fffbeb' },
+            'bg-slate-800': { bg: 'rgba(30,41,59,0.12)', border: 'rgba(30,41,59,0.32)', fg: '#1e293b', activeBg: '#1e293b', activeBorder: '#0f172a', activeFg: '#f8fafc' },
+            'bg-stone-700': { bg: 'rgba(68,64,60,0.14)', border: 'rgba(68,64,60,0.36)', fg: '#44403c', activeBg: '#44403c', activeBorder: '#292524', activeFg: '#fefce8' },
+            'bg-purple-700': { bg: 'rgba(109,40,217,0.12)', border: 'rgba(109,40,217,0.32)', fg: '#6d28d9', activeBg: '#6d28d9', activeBorder: '#581c87', activeFg: '#f5f3ff' },
+            default: { bg: 'rgba(51,65,85,0.12)', border: 'rgba(51,65,85,0.32)', fg: '#334155', activeBg: '#334155', activeBorder: '#1f2937', activeFg: '#f8fafc' }
+        };
+
+        const getTabColors = (btnClass) => tabPalette[btnClass] || tabPalette.default;
+
+        const TripApp = () => {
+            const [activeDayIndex, setActiveDayIndex] = useState(0);
+            const [selectedEvent, setSelectedEvent] = useState(null);
+            const [currentDayKey, setCurrentDayKey] = useState("intro");
+            const [transitionDir, setTransitionDir] = useState("forward");
+            const [slideInKey, setSlideInKey] = useState("intro");
+            const tabsRef = useRef(null);
+            const clipboardSupported = typeof navigator !== 'undefined' && Boolean(navigator.clipboard);
+
+            const coords = useMemo(() => ({
+                tpe: [25.0797, 121.2342],
+                cts: [42.7752, 141.6923],
+                sapporo: [43.0687, 141.3507],
+                odori: [43.0619, 141.3565],
+                otaru: [43.1907, 140.9947],
+                ishiya: [43.0895, 141.3175],
+                nijo: [43.0607, 141.3545],
+                nrt: [35.7719, 140.3929],
+                roppongi: [35.6628, 139.7314],
+                ginza: [35.6712, 139.7665],
+                hibiya: [35.6736, 139.7562],
+                tokyoSt: [35.6812, 139.7671],
+                marunouchi: [35.6764, 139.7649],
+                takasaki: [36.3220, 139.0125],
+                daruma: [36.3150, 138.9760],
+                karuizawa: [36.3435, 138.6355],
+                kusatsu: [36.6208, 138.5963],
+                yokohama: [35.4596, 139.6433],
+                redbrick: [35.4526, 139.6429],
+                shinyokohama: [35.5098, 139.6176]
+            }), []);
+
+            const mapRoutes = useMemo(() => [
+                {
+                    id: 'day-sap-arrival',
+                    path: [coords.tpe, coords.cts, coords.sapporo],
+                    stops: [
+                        { name: "TPE", coord: coords.tpe, landmark: "" },
+                        { name: "CTS", coord: coords.cts, landmark: "" },
+                        { name: "札幌", coord: coords.sapporo, landmark: "" }
+                    ],
+                    landmarks: [
+                        { emoji: "🛫", label: "桃園 T1", coord: coords.tpe },
+                        { emoji: "❄️", label: "新千歲機場", coord: coords.cts },
+                        { emoji: "🎄", label: "札幌聖誕市集", coord: coords.odori }
+                    ]
+                },
+                {
+                    id: 'day-sap-otaru',
+                    path: [coords.sapporo, coords.otaru, coords.sapporo],
+                    stops: [
+                        { name: "札幌", coord: coords.sapporo, landmark: "" },
+                        { name: "小樽", coord: coords.otaru, landmark: "" }
+                    ],
+                    landmarks: [
+                        { emoji: "🏮", label: "小樽運河", coord: [43.1974, 141.0020] },
+                        { emoji: "🍰", label: "LeTAO", coord: [43.1950, 141.0028] },
+                        { emoji: "🎼", label: "音樂盒堂", coord: [43.1899, 141.0002] }
+                    ]
+                },
+                {
+                    id: 'day-sap-ishiya',
+                    path: [coords.sapporo, coords.ishiya, coords.sapporo],
+                    stops: [
+                        { name: "札幌", coord: coords.sapporo, landmark: "" },
+                        { name: "白色戀人工廠", coord: coords.ishiya, landmark: "" }
+                    ],
+                    landmarks: [
+                        { emoji: "🍫", label: "ISHIYA 工廠", coord: coords.ishiya },
+                        { emoji: "🦀", label: "毛蟹鍋晚餐", coord: coords.sapporo },
+                        { emoji: "🐟", label: "二条市場", coord: coords.nijo }
+                    ]
+                },
+                {
+                    id: 'day-sap-return',
+                    path: [coords.sapporo, coords.cts],
+                    stops: [
+                        { name: "札幌", coord: coords.sapporo, landmark: "" },
+                        { name: "CTS", coord: coords.cts, landmark: "" }
+                    ],
+                    landmarks: [
+                        { emoji: "🛫", label: "新千歲機場", coord: coords.cts },
+                        { emoji: "🍫", label: "Royce' 巧克力世界", coord: [42.7874, 141.6779] }
+                    ]
+                }
+            ], [coords]);
+
+                                                const schedule = useMemo(() => [
+            {
+                                date: "12/15",
+                                day: "月曜日(Mon)",
+                                title: "第二曲 · 北緯43°序章",
+                                subtitle: "Red-eye into the snowfield",
+                                location: "台北 → 札幌",
+                                theme: { main: "text-sky-900", sub: "text-sky-600", btn: "bg-sky-800" },
+                                events: [
+                                    { 
+                                        time: "02:40", 
+                                        endTime: "07:30", 
+                                        type: "flight", 
+                                        title: "亞航早班機", 
+                                        desc: "台北飛新千歲，未含行李", 
+                                        preview: "凌晨跑道像黑膠序曲，機身切進北國冷空氣。",
+                                        details: "02:40 起飛、07:30 抵達的新千歲，票價約 NT$7,473（未含行李）。紅眼航班，睡眠靠眼罩與頸枕，抵達後直接衝雪國日光。",
+                                        locationQuery: "Taoyuan to New Chitose Airport",
+                                        style: 'haruki',
+                                        price: "NT$7,473 (未含行李)",
+                                        keywords: ["早班機", "加購托運"],
+                                        insights: {
+                                            travel: "提早訂機場接駁或查 JR Pass，可直接銜接進札幌。",
+                                            trap: "凌晨到機場的交通提前排好，計程車與機場捷運首班時間要對好。",
+                                            creative: "把耳機播村上春樹的爵士歌單，讓起飛前的喧囂變成序章的底噪。",
+                                            shopping: "若帶機上水壺，過安檢後再灌熱水，紅眼航班能省下機上冷水的不適。"
+                                        }
+                                    },
+                                    { 
+                                        time: "06:15", 
+                                        endTime: "11:00", 
+                                        type: "flight", 
+                                        title: "長榮後援航班", 
+                                        desc: "備用：06:15 起飛、11:00 抵達", 
+                                        preview: "換日線上的 B 面，稍晚出發保留睡眠。",
+                                        details: "長榮 06:15 起飛、11:00 抵達，票價約 NT$11,688。較舒適的備案，適合想多睡一點的版本。出發前 48 小時確認要哪個航班並同步接駁時間。",
+                                        locationQuery: "Taoyuan to New Chitose Airport",
+                                        style: 'haruki',
+                                        price: "NT$11,688",
+                                        keywords: ["備用航班", "睡好再上"],
+                                        insights: {
+                                            travel: "兩個航班擇一即可，別忘了更新 JR 車票或接駁預約。",
+                                            creative: "較晚起飛的機窗光線更柔和，適合補眠與拍雲海。",
+                                            business: "長榮這時段常有商務客，值機提早可換到較安靜的座位。"
+                                        }
+                                    },
+                                    { 
+                                        time: "12:30", 
+                                        type: "food", 
+                                        title: "飯店寄行李＋附近午餐", 
+                                        desc: "先卸重，再用熱湯暖手", 
+                                        preview: "大雪街角先卸行李，蒸氣麵湯把冬天鎖住。",
+                                        details: "12:30 抵達札幌後先寄放行李，找最近的湯咖哩、拉麵或定食暖身。這段時間也能確認晚上的聖誕市集路線與集合點。",
+                                        locationQuery: "Sapporo Station lunch",
+                                        style: 'haruki',
+                                        keywords: ["寄行李", "午餐"],
+                                        insights: {
+                                            local: "札幌車站周邊美食多，避開正午尖峰能更快入座。",
+                                            travel: "寄物櫃以 500/600 日圓硬幣為主，先準備零錢避免排隊找零。",
+                                            creative: "拍一張行李票與餐券的並排照，像旅行故事的第一頁。",
+                                            shopping: "想補雪用手套、暖暖包，可先在藥妝店比價再決定是否去免稅店補貨。"
+                                        }
+                                    },
+                                    { 
+                                        time: "15:00", 
+                                        type: "hotel", 
+                                        title: "Check-in · 休息或電器百貨巡迴", 
+                                        desc: "入住後短暫修整", 
+                                        preview: "暖氣的霧氣與電器燈箱交織，像中場調音。",
+                                        details: "15:00 正式 check-in，先暖身補眠。若精神允許，可到 Bic Camera / Yodobashi 逛逛補齊轉接頭、暖暖包與雪地小物。",
+                                        locationQuery: "Sapporo Station hotels",
+                                        style: 'haruki',
+                                        keywords: ["check-in", "Bic Camera", "暖暖包"],
+                                        insights: {
+                                            shopping: "北海道冬天的防滑貼、暖暖包在車站百貨都能補貨。",
+                                            travel: "先把護照、錢包集中小包，Check-in 時只拿證件，其他留在寄物袋，手不會凍到。",
+                                            trap: "房間暖氣強，入內先開窗換氣 5 分鐘，避免太乾燥導致喉嚨痛。"
+                                        }
+                                    },
+                                    { 
+                                        time: "17:00", 
+                                        type: "activity", 
+                                        title: "札幌車站聖誕市集", 
+                                        desc: "晚餐就在市集解決", 
+                                        preview: "大通公園亮起燈海，香料酒與烤腸是進場密碼。",
+                                        details: "17:00 從飯店出發，往札幌車站與大通公園聖誕市集。熱紅酒、香腸或熱巧克力當作晚餐，記得穿好手套，邊逛邊吃保暖。",
+                                        locationQuery: "Sapporo Christmas Market Odori",
+                                        style: 'haruki',
+                                        keywords: ["聖誕市集", "熱紅酒", "戶外夜市"],
+                                        insights: {
+                                            travel: "市集多為露天，雪後地面濕滑，鞋底防滑貼或冰爪提前裝好。",
+                                            creative: "把熱紅酒杯放在燈串前拍一張，燈光散景會像彈跳的音符。",
+                                            shopping: "保溫杯可以現場請攤位加熱紅酒，喝完帶走也不佔手。",
+                                            local: "大通公園附近便利店 17:00 後人潮多，想買暖暖包記得提早。"
+                                        }
+                                    }
+                                ]
+                            },
+            {
+                                date: "12/16",
+                                day: "火曜日(Tue)",
+                                title: "第二曲 · 小樽琥珀日",
+                                subtitle: "Canal glass & custard clouds",
+                                location: "札幌 → 小樽 → 札幌",
+                                theme: { main: "text-emerald-900", sub: "text-emerald-600", btn: "bg-emerald-800" },
+                                events: [
+                                    { 
+                                        time: "09:00", 
+                                        type: "transport", 
+                                        title: "前往小樽", 
+                                        desc: "JR 快速或區間約 35 分鐘", 
+                                        preview: "窗外雪光閃動，鐵道貼著海線前進。",
+                                        details: "早上從札幌搭 JR 前往小樽，車程約 35–45 分鐘。站在右側欣賞海線雪景，抵達後先把行李寄物櫃。",
+                                        locationQuery: "Sapporo Station to Otaru",
+                                        style: 'haruki',
+                                        keywords: ["JR", "海線", "寄物櫃"],
+                                        insights: {
+                                            travel: "小樽站出站右側就有寄物櫃，冬天要先塞好帽子手套再出站。",
+                                            local: "車廂右側靠窗能看到海線與港口，左側是山景，挑位時可依偏好選側。",
+                                            creative: "海線與雪交錯時，拍一段 10 秒車窗影片，回程剪成琥珀色的過場。",
+                                            trap: "月台積雪時階梯容易濕滑，下車別急著奔跑，先確認腳底防滑。"
+                                        }
+                                    },
+                                    { 
+                                        time: "10:30", 
+                                        type: "activity", 
+                                        title: "小樽運河 · 甜點散步", 
+                                        desc: "運河、玻璃工房、LeTAO", 
+                                        preview: "雪中的煤油燈與甜點香氣，是北國的浪漫配方。",
+                                        details: "沿運河散步，順路逛北一硝子與音樂盒堂，午餐與甜點可選 LeTAO/六花亭。下雪時記得邊走邊進店取暖，買好伴手禮再回札幌。",
+                                        locationQuery: "Otaru Canal",
+                                        style: 'haruki',
+                                        keywords: ["運河", "玻璃", "甜點"],
+                                        insights: {
+                                            shopping: "LeTAO 起司蛋糕可外帶回札幌冷藏，玻璃/音樂盒外箱較大，留意背包空間。",
+                                            travel: "運河邊風很大，拍照時先把手套收進口袋避免被風吹走。",
+                                            creative: "玻璃工房的燈光打在雪地會反出琥珀色，記得多拍低角度倒影。",
+                                            local: "咖啡館常附暖氣座位，點一杯熱拿鐵就能舒服解凍再出發。"
+                                        }
+                                    },
+                                    { 
+                                        time: "17:00", 
+                                        type: "transport", 
+                                        title: "返回札幌 · 晚餐自由", 
+                                        desc: "回札幌後自由覓食或逛狸小路", 
+                                        preview: "黃昏鐵道折返，晚餐交給夜市或拉麵巷。",
+                                        details: "傍晚搭 JR 回札幌，視體力決定要在札幌站/狸小路/薄野覓食。若想排隊名店請提前鎖定時間。",
+                                        locationQuery: "Otaru to Sapporo",
+                                        style: 'haruki',
+                                        keywords: ["狸小路", "札幌拉麵"],
+                                        insights: {
+                                            local: "札幌站地下街暖氣強，逛街時外套可以脫下來拎著，省體力。",
+                                            travel: "回程 JR 夕陽時段座位吃緊，若想坐到靠窗可提前排自由席。",
+                                            creative: "傍晚的列車窗會映出自己的倒影，把運河照片疊在一起拍，像雙重曝光。",
+                                            shopping: "想排拉麵共和國或狸小路甜點，先線上取號（如有）再到現場等待。"
+                                        }
+                                    }
+                                ]
+                            },
+            {
+                                date: "12/17",
+                                day: "水曜日(Wed)",
+                                title: "第二曲 · 巧克力煙囪午後",
+                                subtitle: "ISHIYA steam + city cafes",
+                                location: "札幌市區",
+                                theme: { main: "text-rose-900", sub: "text-rose-600", btn: "bg-rose-800" },
+                                events: [
+                                    { 
+                                        time: "10:00", 
+                                        type: "transport", 
+                                        title: "出發前往白色戀人工廠", 
+                                        desc: "地鐵東西線前往宮之澤", 
+                                        preview: "列車穿進積雪，巧克力香氣在前方。",
+                                        details: "10:00 從札幌站搭地鐵東西線到宮之澤，再轉公車或步行至 ISHIYA 工廠，車程約 30–40 分鐘。記得提前查好開館時段。",
+                                        locationQuery: "Miyanosawa Station",
+                                        style: 'haruki',
+                                        keywords: ["地鐵", "宮之澤"],
+                                        insights: {
+                                            travel: "工廠門票建議事先線上預約，冬天現場排隊會很冷。",
+                                            local: "宮之澤站出口外就有便利店，可先補手套或暖暖包再走到公車站。",
+                                            creative: "地鐵東西線的列車配色與雪景很搭，拍車廂與窗外白霧的對比感。"
+                                        }
+                                    },
+                                    { 
+                                        time: "10:50", 
+                                        type: "activity", 
+                                        title: "白色戀人巧克力工廠", 
+                                        desc: "預計 10:50 抵達", 
+                                        preview: "甜點流水線、餅乾香氣是今日 BGM。",
+                                        details: "10:50 抵達後參觀製程、拍照，別錯過限量霜淇淋與烘焙體驗。紀念品可寄送或壓在行李底層。",
+                                        locationQuery: "ISHIYA CO., LTD. Miyanosawa Factory",
+                                        style: 'haruki',
+                                        keywords: ["ISHIYA", "伴手禮"],
+                                        insights: {
+                                            shopping: "霜淇淋適合現場吃，禮盒則建議最後出場前再購買。",
+                                            creative: "觀察輸送帶上餅乾整齊排列的節奏，拍成延時影片像機械版樂譜。",
+                                            travel: "館內暖氣足，外套可先寄物或綁在背包，逛展手不會過熱。",
+                                            trap: "烘焙體驗名額有限，現場滿席時可以先逛花園再回到報到處詢問候補。"
+                                        }
+                                    },
+                                    { 
+                                        time: "14:00", 
+                                        type: "activity", 
+                                        title: "市區咖啡廳 / 魚市場候選", 
+                                        desc: "午後彈性行程", 
+                                        preview: "咖啡香或魚腥味，隨心切換。",
+                                        details: "午後可選擇網紅咖啡廳取暖，或到二条市場、場外市場逛逛。依當日天氣與體力決定。",
+                                        locationQuery: "Sapporo Cafe or Nijo Market",
+                                        style: 'haruki',
+                                        keywords: ["咖啡", "市場"],
+                                        insights: {
+                                            local: "熱門咖啡店常有候位表，可先登記再去附近晃晃。",
+                                            travel: "二条市場下午後生食選項會減少，想吃海鮮丼請在 15:00 前抵達。",
+                                            creative: "挑一間窗邊咖啡座，拍下窗外飄雪與桌上咖啡杯的對焦切換，當作今日的靜物練習。",
+                                            shopping: "市場內海鮮伴手禮多可真空包裝，但記得回台攜帶規定；咖啡店豆子可請研磨成手沖粉方便攜帶。"
+                                        }
+                                    },
+                                    { 
+                                        time: "19:00", 
+                                        type: "food", 
+                                        title: "札幌車站附近毛蟹鍋", 
+                                        desc: "晚餐預訂名店", 
+                                        preview: "毛蟹上桌，蒸氣把冬夜封住。",
+                                        details: "晚上預約札幌站周邊毛蟹鍋名店，行前一天確認訂位。建議提前抵達避免排隊，完食後可以順路採買伴手禮。",
+                                        locationQuery: "Sapporo Station crab hot pot",
+                                        style: 'haruki',
+                                        keywords: ["毛蟹鍋", "預訂"],
+                                        insights: {
+                                            travel: "北海道海鮮店多半只保留 10–15 分鐘座位，務必準時。",
+                                            local: "札幌站周邊有些店現場排隊需先抽號碼，抵達先確認規則避免白等。",
+                                            creative: "點一份蟹腳前先拍蒸氣升起的瞬間，蒸氣會在 Haruki 卡片裡像文字的行間空白。",
+                                            trap: "雪靴進店前多半要換拖鞋，襪子記得保持乾淨且無破洞。"
+                                        }
+                                    }
+                                ]
+                            },
+            {
+                                date: "12/18",
+                                day: "木曜日(Thu)",
+                                title: "第二曲 · 雪線謝幕",
+                                subtitle: "Pack light, fly warm",
+                                location: "札幌 → 新千歲 → 台北",
+                                theme: { main: "text-amber-900", sub: "text-amber-600", btn: "bg-amber-700" },
+                                events: [
+                                    { 
+                                        time: "10:00", 
+                                        type: "transport", 
+                                        title: "Check-out 前往機場", 
+                                        desc: "Della Chen 帶隊移動", 
+                                        preview: "行李鎖好暖暖包，雪路向機場延伸。",
+                                        details: "10:00 退房出發，搭 JR 快速/巴士前往新千歲。跟 Della Chen 會合，留好至少 2 小時餘裕辦理退稅與托運。",
+                                        locationQuery: "Sapporo Station to CTS",
+                                        style: 'haruki',
+                                        keywords: ["退房", "新千歲"],
+                                        insights: {
+                                            travel: "雪天移動預留緩衝，月台風強，手套與帽子別塞太深。",
+                                            local: "JR 快速 Airport 平日尖峰仍會滿座，提早 20 分鐘排隊較容易坐到。",
+                                            trap: "行李放月台時切記不要靠近黃線，雪融後地面濕滑容易滑落。",
+                                            creative: "在出發前拍下房卡、手套、車票並排的平躺照，當成北海道章節的封底。"
+                                        }
+                                    },
+                                    { 
+                                        time: "14:00", 
+                                        endTime: "17:55", 
+                                        type: "flight", 
+                                        title: "亞航回程", 
+                                        desc: "14:00 起飛、17:55 抵達", 
+                                        preview: "午後班機帶著冬夜的味道返台。",
+                                        details: "亞航回程班機 14:00 起飛、17:55 抵達，票價約 NT$3,444（未含行李）。登機前把厚外套收好，機上空調偏乾記得補水。",
+                                        locationQuery: "New Chitose Airport",
+                                        style: 'haruki',
+                                        price: "NT$3,444 (未含行李)",
+                                        keywords: ["返程", "行李加購"],
+                                        insights: {
+                                            travel: "機場內有 Royce' 巧克力世界與 Doraemon Waku Waku Sky Park，可視時間快閃。",
+                                            shopping: "Royce' 生巧需冷藏，記得最後買並索取保冷袋；Doraemon 商店小物可當伴手禮。",
+                                            creative: "登機前找一個大面玻璃窗拍雪地跑道與機翼，當作雪線謝幕的定格畫面。",
+                                            trap: "安檢前先把暖暖包、行動電源集中，北海道冬季安檢常要求逐一確認。"
+                                        },
+                                        flightInfo: { departure: "14:00", arrival: "17:55", terminal: "CTS" }
+                                    }
+                                ]
+                            }
+            ], []);
+
+
+
+            const dayKeys = useMemo(() => schedule.map((day) => day.date.replace('/', '')), [schedule]);
+            const tabOrder = useMemo(() => ['intro', ...dayKeys], [dayKeys]);
+            const tabItems = useMemo(() => {
+                const items = schedule.map((day, index) => {
+                    const weekSymbol = day.day ? day.day.trim().charAt(0) : '';
+                    const label = weekSymbol ? `${day.date} ${weekSymbol}` : day.date;
+                    return { key: dayKeys[index], label, palette: getTabColors(day.theme?.btn) };
+                });
+                return [{ key: 'intro', label: '序曲 Intro', palette: getTabColors(introHero.theme.btn) }, ...items];
+            }, [schedule, dayKeys]);
+            const panelRef = useRef(null);
+
+            const heroSchedule = currentDayKey === 'intro' ? introHero : schedule[activeDayIndex];
+            const heroDateNumber = currentDayKey === 'intro' ? '序曲' : heroSchedule.date.split('/')[1];
+            const heroDateLabel = currentDayKey === 'intro' ? 'Intro' : 'Dec';
+            const getPanelClass = (panelKey) => {
+                const isActivePanel = currentDayKey === panelKey;
+                const slideClass = isActivePanel && slideInKey === panelKey
+                    ? (transitionDir === 'forward' ? ' slide-in-from-right' : ' slide-in-from-left')
+                    : '';
+                return `day-panel${isActivePanel ? ' is-active' : ''}${slideClass}`;
+            };
+            
+            useEffect(() => {
+                if (!slideInKey) return;
+                const id = requestAnimationFrame(() => setSlideInKey(null));
+                return () => cancelAnimationFrame(id);
+            }, [slideInKey]);
+
+            useEffect(() => {
+                if (!tabsRef.current) return;
+                const tab = tabsRef.current.querySelector(`[data-day="${currentDayKey}"]`);
+                tab?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+            }, [currentDayKey]);
+
+            const paidEvents = useMemo(() => {
+                return schedule.flatMap((day, dayIndex) => 
+                    day.events
+                        .map((event, index) => ({ ...event, dayKey: dayKeys[dayIndex], key: `${dayKeys[dayIndex]}-${index}` }))
+                        .filter((event) => event.price)
+                );
+            }, [schedule, dayKeys]);
+
+            const decodeSharedChecks = useCallback(() => {
+                const params = new URLSearchParams(window.location.search);
+                const encoded = params.get('sharedChecks');
+                if (!encoded) return null;
+                try {
+                    const decoded = atob(encoded);
+                    return JSON.parse(decoded);
+                } catch (error) {
+                    return null;
+                }
+            }, []);
+
+            const [sharedChecks, setSharedChecks] = useState(() => {
+                const persisted = decodeSharedChecks();
+                if (persisted) return persisted;
+                try {
+                    return JSON.parse(localStorage.getItem('sharedPaidChecks') || '{}');
+                } catch {
+                    return {};
+                }
+            });
+
+            useEffect(() => {
+                localStorage.setItem('sharedPaidChecks', JSON.stringify(sharedChecks));
+            }, [sharedChecks]);
+
+            const updateUrlWithChecks = useCallback((nextState) => {
+                try {
+                    const encoded = btoa(JSON.stringify(nextState));
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('sharedChecks', encoded);
+                    const newUrl = `${window.location.pathname}?${params.toString()}`;
+                    window.history.replaceState(null, '', newUrl);
+                } catch {
+                    // ignore
+                }
+            }, []);
+
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                if (params.has('sharedChecks')) return;
+                updateUrlWithChecks(sharedChecks);
+            }, [sharedChecks, updateUrlWithChecks]);
+
+            const toggleSharedCheck = (key) => {
+                setSharedChecks((prev) => {
+                    const next = { ...prev, [key]: !prev[key] };
+                    updateUrlWithChecks(next);
+                    return next;
+                });
+            };
+
+            const shareUrl = () => {
+                if (!navigator.clipboard) {
+                    window.alert("Clipboard unavailable; copy the link manually.");
+                    return;
+                }
+                navigator.clipboard.writeText(window.location.href);
+            };
+
+            const goToTab = (key) => {
+                if (key === currentDayKey) return;
+                if (!tabOrder.includes(key)) return;
+                const currentIndex = tabOrder.indexOf(currentDayKey);
+                const targetIndex = tabOrder.indexOf(key);
+                const direction = targetIndex > currentIndex ? 'forward' : 'backward';
+                setTransitionDir(direction);
+                setCurrentDayKey(key);
+                if (targetIndex > 0) {
+                    setActiveDayIndex(targetIndex - 1);
+                }
+                setSlideInKey(key);
+            };
+
+            const getTypeColor = (type) => {
+                switch (type) {
+                case 'flight': return 'bg-blue-600 text-white';
+                case 'transport': return 'bg-slate-700 text-white';
+                case 'hotel': return 'bg-emerald-600 text-white';
+                case 'food': return 'bg-amber-600 text-white';
+                case 'shop': return 'bg-pink-600 text-white';
+                case 'warning': return 'bg-rose-600 text-white';
+                default: return 'bg-slate-500 text-white';
+                }
+            };
+
+            const getTypeBg = (type) => {
+                switch (type) {
+                case 'flight': return 'bg-blue-50 border-blue-200 hover:bg-blue-100';
+                case 'transport': return 'bg-slate-50 border-slate-200 hover:bg-slate-100';
+                case 'hotel': return 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100';
+                case 'food': return 'bg-amber-50 border-amber-200 hover:bg-amber-100';
+                case 'shop': return 'bg-pink-50 border-pink-200 hover:bg-pink-100';
+                default: return 'bg-white border-slate-200 hover:bg-slate-50';
+                }
+            };
+
+            const buildMapUrl = (event, fallback = "Tokyo, Japan") => {
+                if (!event) {
+                    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallback)}`;
+                }
+                if (event.mapUrl) {
+                    return event.mapUrl;
+                }
+                const query = event.locationQuery || event.title || fallback;
+                const normalized = String(query);
+                if (normalized.startsWith('http')) {
+                    return normalized;
+                }
+                return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(normalized)}`;
+            };
+
+            const getStyleClass = (style) => style ? `style-${style}` : '';
+            const isGlitchStyle = (style) => ['kon', 'ghoul'].includes(style);
+
+            const modalStyle = selectedEvent?.style;
+            const glitchStyle = isGlitchStyle(modalStyle);
+            const isKusama = modalStyle === 'kusama';
+            const modalContainerClass = [
+                "bg-[#fdfbf7] relative z-10 w-full sm:max-w-lg shadow-2xl border border-stone-200 flex flex-col max-h-[85vh] animate-in fade-in zoom-in duration-500 overflow-hidden",
+                getStyleClass(modalStyle)
+            ].join(' ');
+            const modalHeaderClass = `p-5 sm:p-6 border-b border-stone-100 relative ${glitchStyle ? 'bg-[#0f172a] border-gray-800' : ''}`;
+            const modalCloseClass = `absolute top-6 right-6 transition-colors ${glitchStyle ? 'text-red-500 hover:text-red-400' : 'text-stone-300 hover:text-stone-600'}`;
+            const modalContentClass = `p-5 sm:p-6 overflow-y-auto custom-scrollbar ${glitchStyle ? 'bg-[#111] text-stone-300' : ''} ${isKusama ? 'inner-card' : ''}`;
+            const modalFooterClass = `p-4 sm:p-5 border-t flex justify-center ${glitchStyle ? 'bg-[#0a0a0a] border-zinc-900' : 'bg-stone-50 border-stone-100'}`;
+            const badgeClass = `text-[10px] font-bold uppercase tracking-[0.2em] px-2 py-1 ${glitchStyle ? 'text-red-500 bg-black border border-red-900' : 'text-stone-400 bg-stone-50'}`;
+            const glitchTitleClass = glitchStyle ? 'text-white' : 'font-display text-stone-800';
+            const glitchMetaClass = `flex items-center text-sm font-medium ${glitchStyle ? 'text-blue-400 font-mono' : 'text-stone-500 font-serif italic'}`;
+            const glitchContentText = `text-sm leading-8 mb-8 text-justify ${glitchStyle ? 'text-stone-400 font-sans tracking-wide' : 'text-stone-600 font-serif'}`;
+            const vocabTitleClass = `font-bold mb-6 text-[10px] flex items-center justify-center uppercase tracking-[0.2em] font-sans ${glitchStyle ? 'text-blue-900' : 'text-stone-300'}`;
+            const trapContainerClass = `mb-8 p-6 border-l-2 ${glitchStyle ? 'bg-red-900/20 border-red-600 text-red-400' : 'bg-rose-50/50 border-rose-300'}`;
+            const trapHeadingClass = `font-bold text-xs flex items-center mb-3 uppercase tracking-wider ${glitchStyle ? 'text-red-500' : 'font-display text-rose-800'}`;
+            const trapTextClass = `text-sm leading-relaxed ${glitchStyle ? 'font-sans opacity-90' : 'text-rose-900/70 font-serif'}`;
+            const insightHeaderClass = `flex items-center gap-2 mb-2 transition-colors ${glitchStyle ? 'text-blue-600 group-hover:text-blue-400' : 'text-stone-400 group-hover:text-stone-600'}`;
+            const insightBodyClass = `text-sm leading-7 pl-6 border-l transition-colors ${glitchStyle ? 'text-stone-400 border-zinc-800 font-sans' : 'text-stone-600 font-serif border-stone-100 group-hover:border-stone-300'}`;
+            const mapLinkClass = `text-xs font-bold tracking-widest uppercase transition-colors flex items-center gap-2 font-sans ${glitchStyle ? 'text-blue-500 hover:text-white' : 'text-stone-400 hover:text-stone-800'}`;
+
+            return (
+                <div className="min-h-screen bg-[#f9f8f6] font-sans text-stone-800 pb-12 relative transition-colors duration-1000">
+                
+                {/* Header - Compact Layout */}
+                <div className={`p-4 pb-6 relative z-10 border-b border-stone-200 bg-[#fbfaf8]`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 sm:mb-4 max-w-2xl mx-auto gap-2">
+                        <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-stone-400 font-sans">
+                                    TOKYO CHRONICLES 2025
+                                </span>
+                            </div>
+                            <h1 className={`hero-title-main text-2xl sm:text-4xl font-bold tracking-tight mb-1 leading-tight font-display ${heroSchedule.theme.main}`}>
+                                {heroSchedule.title}
+                            </h1>
+                            <p className={`text-xs sm:text-sm font-serif italic tracking-wide mb-1 ${heroSchedule.theme.sub}`}>
+                                {heroSchedule.subtitle}
+                            </p>
+                            <p className="text-stone-400 text-xs flex items-center font-medium tracking-wider font-sans mt-2">
+                                <MapPin size={12} className="mr-1.5" /> {heroSchedule.location}
+                            </p>
+                        </div>
+                        <div className="text-left sm:text-right mt-2 sm:mt-0 flex flex-row sm:flex-col items-baseline sm:items-end gap-2 sm:gap-0">
+                            <div className="text-4xl sm:text-5xl font-black text-stone-200 font-display tracking-tighter leading-none">
+                                {heroDateNumber}
+                            </div>
+                            <div className="text-stone-300 font-serif text-sm tracking-widest uppercase">{heroDateLabel}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Date Selector */}
+                <div className="px-4 -mt-8 mb-8 relative z-20 animate-in max-w-2xl mx-auto">
+                    <div ref={tabsRef} className="bg-white/80 backdrop-blur-sm rounded-none shadow-sm p-2 overflow-x-auto no-scrollbar border border-stone-200 day-tabs">
+                        {tabItems.map((tab) => (
+                            <button
+                                key={tab.key}
+                                className={`day-tab ${currentDayKey === tab.key ? 'is-active' : ''}`}
+                                data-day={tab.key}
+                                onClick={() => goToTab(tab.key)}
+                                style={{
+                                    '--day-bg': tab.palette.bg,
+                                    '--day-border': tab.palette.border,
+                                    '--day-fg': tab.palette.fg,
+                                    '--day-active-bg': tab.palette.activeBg,
+                                    '--day-active-border': tab.palette.activeBorder,
+                                    '--day-active-fg': tab.palette.activeFg
+                                }}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Main List Content */}
+                <div className="px-6 max-w-2xl mx-auto min-h-[50vh]">
+                    <div className="day-panel-container swipe-enabled pb-16" ref={panelRef}>
+                        <div className={getPanelClass('intro')} data-day="intro">
+                            <div className="space-y-4">
+                                <div className="intro-screen">
+                                    <div className="w95-window">
+                                        <div className="w95-titlebar">
+                                            <span>Welcome</span>
+                                            <span className="w95-title-dots">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </span>
+                                        </div>
+                                        <div className="w95-body">
+                                            <p className="w95-headline">Welcome to Tokyo 95</p>
+                                            <p className="w95-subhead">Boot up the itinerary before diving into each act.</p>
+                                            <ul className="w95-itinerary">
+                                                {schedule.map((day) => (
+                                                    <li key={day.date} className="w95-itinerary-item">
+                                                        <div className="w95-itinerary-date">{day.date}</div>
+                                                        <div className="w95-itinerary-title">{day.title}</div>
+                                                        <div className="w95-itinerary-location">{day.location}</div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <button className="w95-button" type="button">
+                                                Launch Chronology
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {schedule.map((day, dayIndex) => {
+                        const dayKey = dayKeys[dayIndex];
+                        const route = mapRoutes[dayIndex];
+                        return (
+                            <div 
+                                key={dayKey} 
+                                className={getPanelClass(dayKey)}
+                                data-day={dayKey}
+                            >
+                                <div className="space-y-12">
+                                {day.events.map((event, index) => {
+                                    const preview = event.preview || event.desc;
+                                    const mapHref = buildMapUrl(event, day.location);
+                                    return (
+                                    <div 
+                                        key={index} 
+                                        className="group cursor-pointer relative pl-8 border-l border-stone-200 hover:border-stone-400 transition-colors duration-500"
+                                        onClick={() => setSelectedEvent(event)}
+                                    >
+                                        {/* Time */}
+                                        <div className={`absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full border-2 border-[#f9f8f6] transition-colors duration-300 ${day.theme.btn}`}></div>
+                                        
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div className="flex flex-col gap-1">
+                                                <div className="font-serif text-stone-400 text-sm tracking-widest">{event.time}</div>
+                                            {event.weather && (
+                                                <div className="flex items-start gap-2 text-[11px] text-stone-500 font-sans">
+                                                    <WeatherIcon type={event.weather.type} size={14} className="mt-0.5 text-stone-400" />
+                                                    <div className="flex flex-col leading-tight">
+                                                        <span className="font-semibold text-[12px]">{event.weather.current || event.weather.temp}</span>
+                                                        <div className="flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.25em] text-stone-400">
+                                                            {event.weather.high && <span>H {event.weather.high}</span>}
+                                                            {event.weather.low && <span>L {event.weather.low}</span>}
+                                                            <span>{event.weather.loc}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            </div>
+                                            
+                                            {/* Always-visible Google Maps shortcut */}
+                                            <div className="flex items-center">
+                                                <a
+                                                    href={mapHref}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="flex items-center justify-center w-8 h-8 text-[11px] font-bold text-stone-500 hover:text-stone-800 transition-colors bg-white rounded-full shadow-sm border border-stone-200"
+                                                >
+                                                    <MapIcon size={13} />
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="mb-4">
+                                            <h3 className={`font-display text-xl font-bold mb-1 group-hover:text-black transition-colors duration-300 ${day.theme.main}`}>{event.title}</h3>
+                                            <p className={`text-sm font-serif leading-relaxed line-clamp-2 ${day.theme.sub}`}>
+                                                {preview}
+                                            </p>
+                                        </div>
+
+                                        {/* Tags */}
+                                        <div className="flex gap-2 flex-wrap mb-4">
+                                            {event.keywords && event.keywords.map((k, i) => (
+                                                <span key={i} className="text-[10px] font-medium text-stone-400 border-b border-stone-200 pb-0.5">
+                                                #{k}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    );
+                                })}
+                                </div>
+
+                                {/* Daily Map Section */}
+                                {currentDayKey !== 'intro' && activeDayIndex === dayIndex && (
+                                <div className="mb-16 animate-in fade-in zoom-in duration-1000 delay-200">
+                                    <div className="flex items-center justify-center mb-6">
+                                        <span className="h-px w-8 bg-stone-300"></span>
+                                        <h4 className="text-xs font-serif text-stone-400 uppercase tracking-[0.2em] mx-4">
+                                            JOURNEY MAP
+                                        </h4>
+                                        <span className="h-px w-8 bg-stone-300"></span>
+                                    </div>
+                                    <div className="bg-white p-2 shadow-xl shadow-stone-200/50 border border-stone-100 style-matsumoto">
+                                        <DailyMapView route={route} dayIndex={dayIndex} />
+                                    </div>
+                                </div>
+                                )}
+                            </div>
+                        );
+                        })}
+                </div>
+                
+                {/* Public Paid Checklist */}
+                <div className="public-checklist mx-auto mt-8 max-w-2xl bg-white border border-stone-200 rounded-2xl shadow-lg p-5">
+                    <div className="flex items-center justify-between mb-3">
+                        <div>
+                            <div className="text-[10px] uppercase tracking-[0.3em] text-stone-400">公開 Check</div>
+                            <h4 className="font-display text-lg text-stone-800 mt-1">Paid itinerary checklist</h4>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={shareUrl}
+                            disabled={!clipboardSupported}
+                            className={`px-3 py-2 text-xs uppercase tracking-[0.25em] font-bold text-stone-600 border border-stone-300 rounded-full transition ${clipboardSupported ? 'hover:bg-stone-100' : 'opacity-40 cursor-not-allowed'}`}
+                        >
+                            Copy link
+                        </button>
+                    </div>
+                    <p className="text-[11px] text-stone-500 mb-4">
+                        The state is encoded in the URL so collaborators can open the same link and toggle these together.
+                    </p>
+                    {!clipboardSupported && (
+                        <p className="text-[11px] text-stone-400 mb-4">
+                            Clipboard not supported on this device; copy the URL manually from the address bar.
+                        </p>
+                    )}
+                    <div className="space-y-3">
+                        {paidEvents.map((event) => (
+                            <label
+                                key={event.key}
+                                className="flex items-center justify-between gap-3 p-3 border border-stone-100 rounded-xl hover:border-stone-300 transition"
+                            >
+                                <div>
+                                    <div className="text-sm font-semibold">{event.title}</div>
+                                    <div className="text-[11px] text-stone-500">
+                                        {event.dayKey} · {event.price}
+                                    </div>
+                                </div>
+                                <input
+                                    type="checkbox"
+                                    checked={Boolean(sharedChecks[event.key])}
+                                    onChange={() => toggleSharedCheck(event.key)}
+                                    className="h-4 w-4 accent-stone-800"
+                                />
+                            </label>
+                        ))}
+                        {paidEvents.length === 0 && (
+                            <p className="text-[11px] text-stone-400">No paid items found yet.</p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="mt-12 text-center pb-12 opacity-40 font-serif">
+                    <p className="text-[10px] tracking-[0.3em] uppercase text-stone-500">Tokyo Chronicles 2025</p>
+                </div>
+            </div>
+
+                {/* Detail Modal */}
+                {selectedEvent && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+                    <div 
+                        className="absolute inset-0 bg-[#f6f5f3]/90 backdrop-blur-sm transition-opacity duration-500"
+                        onClick={() => setSelectedEvent(null)}
+                    ></div>
+                    <div className={modalContainerClass}>
+                        
+                        {/* Kon Style Glitch Effect */}
+                        {glitchStyle && (
+                             <div className="kon-border"></div>
+                        )}
+
+                        {/* Modal Header */}
+                        <div className={modalHeaderClass}>
+                            <button 
+                                onClick={() => setSelectedEvent(null)}
+                                className={modalCloseClass}
+                            >
+                                <X size={20} strokeWidth={modalStyle === 'kon' ? 3 : 1.5} />
+                            </button>
+                            
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className={badgeClass}>
+                                {selectedEvent.type.toUpperCase()}
+                                </span>
+                            </div>
+                            
+                            <h3 className={`text-2xl sm:text-3xl font-bold mb-2 leading-tight ${glitchTitleClass}`}>{selectedEvent.title}</h3>
+                            <div className={glitchMetaClass}>
+                                <Clock size={14} className="mr-2 opacity-50" />
+                                {selectedEvent.time}
+                            </div>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className={modalContentClass}>
+                            
+                            <p className={glitchContentText}>
+                                {selectedEvent.details}
+                            </p>
+
+                            {/* Trap Insight */}
+                            {selectedEvent.insights?.trap && (
+                                <div className={trapContainerClass}>
+                                    <h4 className={trapHeadingClass}>
+                                        <AlertTriangle size={12} className="mr-2" />
+                                        Trap Warning
+                                    </h4>
+                                    <p className={trapTextClass}>
+                                        {selectedEvent.insights.trap}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Japanese Vocabulary */}
+                            {selectedEvent.vocabulary && (
+                                <div className="mb-10 vocab-section">
+                                    <h4 className={vocabTitleClass}>
+                                        — Vocabulary —
+                                    </h4>
+                                    <div className="grid gap-6">
+                                        {selectedEvent.vocabulary.map((vocab, i) => (
+                                            <div key={i} className="vocab-card relative pl-4 border-l border-stone-200 p-4 rounded-lg">
+                                                <div className="flex items-baseline gap-3 mb-1">
+                                                    <ruby className="vocab-term text-2xl font-medium tracking-wide text-stone-800 font-display">
+                                                        {vocab.term}
+                                                        <rt className="vocab-reading text-xs mb-1 block text-stone-500 font-serif">{vocab.reading}</rt>
+                                                    </ruby>
+                                                    <span className="vocab-badge text-xs font-bold text-stone-500 bg-stone-50 px-2 py-0.5 rounded-full border border-stone-100">{vocab.meaning}</span>
+                                                </div>
+                                                <p className="vocab-desc text-xs leading-relaxed text-stone-600 font-serif">
+                                                    {vocab.desc}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Insights Grid */}
+                            {selectedEvent.insights && (
+                                <div className="space-y-8">
+                                    <h4 className={vocabTitleClass}>
+                                        — Insights —
+                                    </h4>
+                                    
+                                    {Object.entries(selectedEvent.insights).map(([key, value]) => {
+                                        if (key === 'trap') return null;
+                                        
+                                        let icon, label;
+                                        switch(key) {
+                                            case 'shopping': icon = <Gift size={14}/>; label = "Shopping Taste"; break;
+                                            case 'creative': icon = <Lightbulb size={14}/>; label = "Creative"; break;
+                                            case 'history': icon = <BookOpen size={14}/>; label = "History"; break;
+                                            case 'business': icon = <Briefcase size={14}/>; label = "Business"; break;
+                                            case 'politics': icon = <Landmark size={14}/>; label = "Politics"; break;
+                                            case 'local': icon = <Users size={14}/>; label = "Local Voice"; break;
+                                            case 'travel': icon = <Compass size={14}/>; label = "Travel Note"; break;
+                                            default: icon = <Info size={14}/>; label = "Info";
+                                        }
+
+                                        return (
+                                            <div key={key} className="group">
+                                                <div className={insightHeaderClass}>
+                                                    {icon}
+                                                    <span className="text-[10px] font-bold uppercase tracking-widest font-sans">{label}</span>
+                                                </div>
+                                                <p className={insightBodyClass}>
+                                                    {value}
+                                                </p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        
+                        </div>
+                        
+                        <div className={modalFooterClass}>
+                            <a
+                                href={buildMapUrl(selectedEvent, heroSchedule.location)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={mapLinkClass}
+                            >
+                                <MapIcon size={14} />
+                                Open in Google Maps
+                            </a>
+                        </div>
+                    </div>
+                    </div>
+                )}
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<TripApp />);
+    </script>
+
+    <!-- Floating Menu -->
+    <div class="floating-menu">
+      <button class="floating-fab-button" id="fabToggle" aria-label="快速功能">
+        ☰
+      </button>
+
+      <div class="floating-menu-panel" id="floatingMenuPanel">
+        <a class="floating-menu-item" href="#" data-action="sos">
+          <span class="icon">1</span>
+          <span class="label">緊急資訊</span>
+        </a>
+        <a class="floating-menu-item" href="#" data-action="bear">
+          <span class="icon">2</span>
+          <span class="label">熊的情報</span>
+        </a>
+        <a class="floating-menu-item" href="#" data-action="map">
+          <span class="icon">3</span>
+          <span class="label">東京地鐵圖</span>
+        </a>
+        <a class="floating-menu-item" href="#" data-action="tax">
+          <span class="icon">4</span>
+          <span class="label">2026 日本退稅新制</span>
+        </a>
+        <a class="floating-menu-item" href="#" data-action="check">
+          <span class="icon">5</span>
+          <span class="label">日本入境 Check Card</span>
+        </a>
+        <a class="floating-menu-item" href="#" data-action="prep">
+          <span class="icon">6</span>
+          <span class="label">行前 Checklist</span>
+        </a>
+        <a class="floating-menu-item" href="#" data-action="top">
+          <span class="icon">7</span>
+          <span class="label">回到最上面</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="floating-panel" id="floatingCheck">
+      <div class="floating-panel-header">
+        <div class="floating-panel-title">
+          <i class="fa-solid fa-plane-arrival" aria-hidden="true"></i>
+          <span>日本入境 Check Card（2025-2026適用）</span>
+        </div>
+        <button class="floating-panel-close" data-close="check" aria-label="關閉 Check Card">
+          ×
+        </button>
+      </div>
+      <div class="floating-panel-body">
+        <div>
+          <p class="fp-section-title">
+            <i class="fa-solid fa-plane" aria-hidden="true"></i>
+            出發前（建議必做）
+          </p>
+          <ul class="fp-list">
+            <li>
+              🌐 <a href="https://www.vjw.digital.go.jp/main/#/vjwplo001" target="_blank" rel="noopener noreferrer" style="color:#93c5fd;">Visit Japan Web（VJW）</a> 事先填寫
+            </li>
+            <li>→ 護照資訊＋航班＋住宿地址，出示 QR 即可通關</li>
+            <li>📁 備份重要資料：護照影本／住宿地址電話（中英）／回程機票</li>
+            <li>📱 手機準備：網路可用或 QR 截圖；準備信用卡/保險記錄</li>
+          </ul>
+        </div>
+        <div>
+          <p class="fp-section-title">
+            <i class="fa-solid fa-passport" aria-hidden="true"></i>
+            抵達日本時會做什麼？
+          </p>
+          <ul class="fp-list">
+            <li>排入境隊伍 → 出示 VJW QR</li>
+            <li>入境審查：會問旅遊目的與停留天數</li>
+            <li>海關申告 → 出示 QR 或配合行李檢查</li>
+          </ul>
+        </div>
+        <div>
+          <p class="fp-section-title">
+            <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
+            只有以下情況須補紙本
+          </p>
+          <ul class="fp-list">
+            <li>⚠ 沒事先填 VJW → 需要入境卡＋海關申告書</li>
+            <li>⚠ 手機沒電 / 無網路 / QR 遺失</li>
+            <li>⚠ 被抽查或系統當機需現場補紙本</li>
+          </ul>
+          <p class="fp-reading">先填 VJW = 大多免紙卡。沒填才要寫。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 緊急資訊面板 -->
+    <div class="floating-panel dark-panel" id="floatingSos">
+      <div class="floating-panel-header">
+        <div class="floating-panel-title">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          <span>日本緊急資訊 &amp; 處理步驟</span>
+        </div>
+        <button class="floating-panel-close" data-close="sos" aria-label="關閉緊急資訊">
+          ×
+        </button>
+      </div>
+
+      <div class="floating-panel-hero">
+        <img
+          src="https://pic.pimg.tw/robow/1380002383-2771175169.jpg"
+          alt="夜間警局外觀與閃爍警燈"
+        />
+      </div>
+
+      <div class="floating-panel-body">
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
+            緊急電話
+          </h3>
+          <ul class="fp-list">
+            <li>
+              <strong>110 警察（事故／竊盜）</strong>
+              <span class="fp-reading">けいさつ（Keisatsu）</span>
+            </li>
+            <li>
+              <strong>119 救護／消防</strong>
+              <span class="fp-reading">きゅうきゅうしゃ／しょうぼう</span>
+            </li>
+            <li><strong>信用卡</strong> → 打卡背面國際電話</li>
+            <li>
+              <strong>護照</strong> → 先去
+              <span class="fp-reading-inline">交番＝こうばん（Kōban）</span> 報案＋
+              代表處補發
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-car-burst" aria-hidden="true"></i>
+            交通事故（車禍／碰撞）
+          </h3>
+          <ul class="fp-list">
+            <li>有傷→119（救護車）</li>
+            <li>後→110（警察到場）</li>
+            <li>拍照 / 車牌 / 時間 / 地點 / 交換聯絡</li>
+            <li>
+              可直接講的詞：
+              <span class="fp-reading-inline">こうつうじこ（交通事故）</span>
+              <span class="fp-reading-inline">けいさつ（警察）</span>
+              <span class="fp-reading-inline">きゅうきゅうしゃ（救護車）</span>
+            </li>
+          </ul>
+          <p class="fp-reading">
+            👉 說法示例（短字喊就行）：「交通事故！警察！救護車！」
+          </p>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-person-circle-question" aria-hidden="true"></i>
+            物品遭竊/不見
+          </h3>
+          <ul class="fp-list">
+            <li>去交番報案 → 拿遺失/被害證明</li>
+            <li>卡/手機 → 立刻掛失</li>
+            <li>
+              可講的詞：
+              <span class="fp-reading-inline">盗難＝とうなん（Tōnan）（失竊）</span>
+              <span class="fp-reading-inline">落としました＝おとしました（落/不見）</span>
+              <span class="fp-reading-inline">交番＝こうばん（派出所）</span>
+              <span class="fp-reading-inline">財布＝さいふ（錢包）｜スマホ（手機）</span>
+            </li>
+          </ul>
+          <p class="fp-reading">
+            👉 實用喊法：「盗難！交番？」「パスポート 落としました」
+          </p>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-passport" aria-hidden="true"></i>
+            護照遺失
+          </h3>
+          <ul class="fp-list">
+            <li>交番報案→取得遺失證明</li>
+            <li>去台灣駐日代表處辦補發或旅行證明</li>
+            <li>
+              可講詞：
+              <span class="fp-reading-inline">パスポート（護照）</span>
+              <span class="fp-reading-inline">再発行＝さいはっこう（補發）</span>
+              <span class="fp-reading-inline">台湾代表処＝たいわんだいひょうしょ</span>
+            </li>
+          </ul>
+          <p class="fp-reading">📌 小提醒：護照影本存手機/雲端</p>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-briefcase-medical" aria-hidden="true"></i>
+            生病/受傷
+          </h3>
+          <ul class="fp-list">
+            <li>急重→119（救護）</li>
+            <li>輕症→內科 Clinic／藥局 薬局＝やっきょく（Yakkyoku）</li>
+            <li>
+              常用詞：
+              <span class="fp-reading-inline">具合悪い＝ぐあいわるい（不舒服）</span>
+              <span class="fp-reading-inline">病院＝びょういん（醫院）</span>
+              <span class="fp-reading-inline">頭痛（ずつう）／発熱（はつねつ）／下痢（げり）</span>
+            </li>
+          </ul>
+          <p class="fp-reading">
+            👉 直接說症狀＋病院即可，例：「具合悪い 病院？」
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 熊的情報面板 -->
+    <div class="floating-panel dark-panel" id="floatingBear">
+      <div class="floating-panel-header">
+        <div class="floating-panel-title">
+          <i class="fa-solid fa-paw" aria-hidden="true"></i>
+          <span>熊的情報</span>
+        </div>
+        <button class="floating-panel-close" data-close="bear" aria-label="關閉熊的情報">
+          ×
+        </button>
+      </div>
+
+      <div class="floating-panel-hero">
+        <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);padding:0.75rem;background:rgba(15,23,42,0.6);font-size:13px;line-height:1.5;color:#e5e7eb;">
+          <p style="margin:0 0 0.35rem;font-weight:600;">
+            你行程關注區的熊碰撞機率
+          </p>
+          <p style="margin:0 0 0.4rem;">
+            依據 <a href="https://fukazawa-lab.github.io/japan-bear-map/index_en.html?utm_source=goodlucktrip" target="_blank" style="color:#93c5fd;">Japan Bear Map</a> ，可查出你將前往的地點（草津、輕井澤、熊谷）的最新接近/目擊機率。
+          </p>
+          <ul style="margin:0;padding-left:1.1rem;">
+            <li>草津（高意外熱點）→ 建議保持公路與遊客服務中心移動</li>
+            <li>輕井澤／熊谷→ 山林活動仍屬低至中風險，但出現足跡需立即撤退</li>
+            <li style="margin-top:0.4rem;"><a href="https://fukazawa-lab.github.io/japan-bear-map/index_en.html?utm_source=goodlucktrip" target="_blank" style="color:#93c5fd;">🧭 立即查看你地點的機率</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="floating-panel-body">
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-compass" aria-hidden="true"></i>
+            出發前預防
+          </h3>
+          <ul class="fp-list">
+            <li>避免單獨、清晨或傍晚進山，選擇已知路線</li>
+            <li>穿著亮色並攜帶熊鈴／講話製造聲音</li>
+            <li>垃圾、食物請密封‧帶回，不在路邊留香味</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+            發現跡象
+          </h3>
+          <ul class="fp-list">
+            <li>看到糞便、爪痕或新鮮抓痕 → 立即折返</li>
+            <li>遠離河谷和果樹圍欄，這是熊的補給點</li>
+            <li>保持人數、減少單一偏移</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-person-hiking" aria-hidden="true"></i>
+            遇到熊時
+          </h3>
+          <ul class="fp-list">
+            <li>保持冷靜、不要逃跑，慢慢後退</li>
+            <li>面向熊，輕聲說話；不尖叫</li>
+            <li>背包放在身前當護罩，提防前掌攻擊</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-shield" aria-hidden="true"></i>
+            熊靠近
+          </h3>
+          <ul class="fp-list">
+            <li>尋找掩蔽與高地，保護頭頸</li>
+            <li>離開現場後立刻通報管理單位</li>
+            <li>若遭攻擊，可用隨身哨子或空罐製造聲響</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="fp-section-title">
+            <i class="fa-solid fa-link" aria-hidden="true"></i>
+            官方資訊
+          </h3>
+          <ul class="fp-list">
+            <li><a href="https://www.pref.nagano.lg.jp/yasei/bear.html" target="_blank" class="fp-reading-inline">長野縣熊資訊（含輕井澤）</a></li>
+            <li><a href="https://www.pref.gunma.jp/page/16709.html" target="_blank" class="fp-reading-inline">群馬縣熊注意公告（草津）</a></li>
+            <li><a href="https://www.kankyo.metro.tokyo.lg.jp/nature/index.html" target="_blank" class="fp-reading-inline">東京都自然野生動物資訊</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-panel" id="floatingMap">
+      <div class="floating-panel-header">
+        <div class="floating-panel-header-title">
+          <span>🗺️</span>
+          <span>東京地鐵圖</span>
+        </div>
+        <button class="floating-panel-close" data-close="map" aria-label="關閉地鐵圖">
+          ×
+        </button>
+      </div>
+
+      <div style="max-width:320px;">
+        <a href="https://www.tokyometro.jp/station/pdf/202305/202305_number_tcn.pdf" target="_blank" style="display:block;border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.08);box-shadow:0 12px 24px rgba(0,0,0,0.15);">
+          <img
+            src="https://www.tokyometro.jp/tcn/subwaymap/img/img_01.png"
+            alt="Tokyo Metro map preview"
+            style="width:100%;display:block;"
+          />
+        </a>
+        <p class="bear-note" style="margin-top:0.75rem;font-size:12px;line-height:1.4;">
+          官方 PDF 版本（2023/05 版），點圖或 <a href="https://www.tokyometro.jp/station/pdf/202305/202305_number_tcn.pdf" target="_blank">此連結</a> 開啟/下載。
+          若內嵌 PDF 拒絕連線，請利用此外部下載頁面。
+        </p>
+      </div>
+    </div>
+
+    <div class="floating-panel" id="floatingTax">
+      <div class="floating-panel-header">
+        <div class="floating-panel-title">
+          <i class="fa-solid fa-tag" aria-hidden="true"></i>
+          <span>2026 日本退稅新制（2026/11/1起）</span>
+        </div>
+        <button class="floating-panel-close" data-close="tax" aria-label="關閉退稅資訊">
+          ×
+        </button>
+      </div>
+
+      <div class="floating-panel-body">
+        <div>
+          <p class="fp-section-title">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            核心變革
+          </p>
+          <ul class="fp-list">
+            <li>🛍 買東西先含稅，不再店內退稅</li>
+            <li>📌 回國前 → 機場退稅，須排隊驗貨</li>
+            <li>📌 退稅約為消費稅 10%</li>
+            <li>📌 門檻：同店同日總額 ≥ 未稅 ¥5,000</li>
+            <li>📌 不同店家不可累積（新制度也一樣）</li>
+            <li>📌 取消一般/消耗品分類 & 消耗品 50 萬上限</li>
+          </ul>
+        </div>
+        <div>
+          <p class="fp-section-title">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            退稅流程（新制一步看）
+          </p>
+          <ul class="fp-list">
+            <li>🛍 購物結帳（含稅）</li>
+            <li>📄 店家提供 QRcode／收據上顯示</li>
+            <li>🌐 登入 J-TaxRefund（首次需建立帳戶）</li>
+            <li>✈️ 回國前提早到機場 → 退稅櫃檯/KIOSK</li>
+            <li>🧳 海關驗貨（需帶實體商品）</li>
+            <li>💵 退款退至你填的帳戶/信用卡</li>
+          </ul>
+        </div>
+        <div>
+          <p class="fp-section-title">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            其他注意
+          </p>
+          <ul class="fp-list">
+            <li>🔹 不能跨店累加金額 → 需同店同日</li>
+            <li>🔹 量大商品可能被要求托運</li>
+            <li>🔹 建議回程多預留時間（排隊可能很久）</li>
+            <li>🔹 適用所有一般商品 + 消耗品（已合併制度）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-panel" id="floatingChecklist">
+      <div class="floating-panel-header">
+        <div class="floating-panel-title">
+          <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+          <span>日本行前 Checklist</span>
+        </div>
+        <button class="floating-panel-close" data-close="checklist" aria-label="關閉 Checklist">
+          ×
+        </button>
+      </div>
+      <div class="floating-panel-body">
+        <article class="checklist-card">
+          <div class="checklist-card-header">
+            <strong>🇯🇵 日本行前準備 Checklist</strong>
+            <span>手機友善・自動儲存</span>
+          </div>
+
+          <section class="checklist-section">
+            <h4>出發前 1–7 天</h4>
+            <div class="checklist-items">
+              <label><input type="checkbox" data-id="prep-outbound-vjw">VJW入境登錄＋QR截圖</label>
+              <label><input type="checkbox" data-id="prep-outbound-passport">護照影本備份（手機/雲端）</label>
+              <label><input type="checkbox" data-id="prep-outbound-insurance">旅遊保險（醫療+不便險）</label>
+              <label><input type="checkbox" data-id="prep-outbound-sim">eSIM / DJB / Soracom / 實體卡</label>
+              <label><input type="checkbox" data-id="prep-outbound-card">信用卡開啟國外交易</label>
+              <label><input type="checkbox" data-id="prep-outbound-maps">收藏Google地圖+離線區域</label>
+              <label><input type="checkbox" data-id="prep-outbound-docs">住宿&行程截圖備份</label>
+              <label><input type="checkbox" data-id="prep-outbound-suica">Suica/ICOCA行動卡設定</label>
+              <label><input type="checkbox" data-id="prep-outbound-emergency">緊急聯絡方式備份</label>
+            </div>
+          </section>
+
+          <section class="checklist-section">
+            <h4>行李</h4>
+            <div class="checklist-items">
+              <label><input type="checkbox" data-id="prep-luggage-plug">萬用轉接頭（建議）</label>
+              <label><input type="checkbox" data-id="prep-luggage-power">行動電源+延長線+充電線</label>
+              <label><input type="checkbox" data-id="prep-luggage-meds">常備藥包（腸胃/頭痛/過敏/OK繃）</label>
+              <label><input type="checkbox" data-id="prep-luggage-gear">口罩/防曬/雨具</label>
+              <label><input type="checkbox" data-id="prep-luggage-weather">依天氣準備衣物/雪裝</label>
+              <label><input type="checkbox" data-id="prep-luggage-space">留出購物空間🛍</label>
+            </div>
+          </section>
+
+          <section class="checklist-section">
+            <h4>出發當天</h4>
+            <div class="checklist-items">
+              <label><input type="checkbox" data-id="prep-day-passport">護照/手機/行動電源</label>
+              <label><input type="checkbox" data-id="prep-day-vjw">VJW QR 離線截圖</label>
+              <label><input type="checkbox" data-id="prep-day-ticket">電子機票&登機證</label>
+              <label><input type="checkbox" data-id="prep-day-address">日文住宿地址</label>
+              <label><input type="checkbox" data-id="prep-day-cash">現金日幣 ¥10k–30k</label>
+            </div>
+          </section>
+
+          <section class="checklist-section">
+            <h4>入境</h4>
+            <div class="checklist-items">
+              <label><input type="checkbox" data-id="prep-arrival-vjw">出示 VJW 快速通關</label>
+              <label><input type="checkbox" data-id="prep-arrival-customs">海關掃QR或人工檢查</label>
+              <label><input type="checkbox" data-id="prep-arrival-card">無VJW時備妥紙本入境卡</label>
+            </div>
+          </section>
+
+          <section class="checklist-section">
+            <h4>退稅 / 購物 (如適用)</h4>
+            <div class="checklist-items">
+              <label><input type="checkbox" data-id="prep-tax-pay">結帳先含稅，店內不退</label>
+              <label><input type="checkbox" data-id="prep-tax-min">同店/同日未稅 ¥5,000 起可退</label>
+              <label><input type="checkbox" data-id="prep-tax-jtax">購物後至 <a href="https://j-taxrefund.com" target="_blank" rel="noreferrer">J-TaxRefund</a> 建單</label>
+              <label><input type="checkbox" data-id="prep-tax-airport">機場排隊→驗貨→退稅入帳</label>
+            </div>
+          </section>
+
+          <section class="checklist-section">
+            <h4>緊急資訊</h4>
+            <div class="checklist-items">
+              <label><input type="checkbox" data-id="prep-emergency-passport">護照＋手機＋行動電源</label>
+              <label><input type="checkbox" data-id="prep-emergency-cards">雙卡/日幣備用</label>
+              <label><input type="checkbox" data-id="prep-emergency-vjw">VJW QR 在地端</label>
+              <label><input type="checkbox" data-id="prep-emergency-esim">eSIM 已開通</label>
+            </div>
+          </section>
+
+          <p class="checklist-note">每項勾選結果儲存在本機，重新整理仍會保留。</p>
+        </article>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const fabToggle = document.getElementById("fabToggle");
+        const menuPanel = document.getElementById("floatingMenuPanel");
+        const sosPanel = document.getElementById("floatingSos");
+        const bearPanel = document.getElementById("floatingBear");
+        const mapPanel = document.getElementById("floatingMap");
+        const taxPanel = document.getElementById("floatingTax");
+        const checkPanel = document.getElementById("floatingCheck");
+        const checklistPanel = document.getElementById("floatingChecklist");
+        const floatingPanels = [
+          sosPanel,
+          bearPanel,
+          mapPanel,
+          taxPanel,
+          checkPanel,
+          checklistPanel,
+        ];
+
+        const closeFloatingPanels = () => {
+          floatingPanels.forEach((panel) => panel.classList.remove("is-open"));
+        };
+
+        const setMenuOpen = (isOpen) => {
+          menuPanel.classList.toggle("is-open", isOpen);
+          fabToggle.classList.toggle("is-open", isOpen);
+          if (!isOpen) {
+            closeFloatingPanels();
+          }
+        };
+
+        fabToggle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const currentlyOpen = menuPanel.classList.contains("is-open");
+          if (currentlyOpen) {
+            setMenuOpen(false);
+          } else {
+            closeFloatingPanels();
+            setMenuOpen(true);
+          }
+        });
+
+        // 點選各個 menu item
+        menuPanel.addEventListener("click", function (e) {
+          const item = e.target.closest(".floating-menu-item");
+          if (!item) return;
+          e.preventDefault();
+
+          const action = item.dataset.action;
+          setMenuOpen(false); // 點了就先收起主選單
+
+          switch (action) {
+            case "sos": {
+              closeFloatingPanels();
+              sosPanel.classList.toggle("is-open");
+              break;
+            }
+            case "bear": {
+              closeFloatingPanels();
+              bearPanel.classList.toggle("is-open");
+              break;
+            }
+            case "map": {
+              closeFloatingPanels();
+              mapPanel.classList.toggle("is-open");
+              break;
+            }
+            case "tax": {
+              closeFloatingPanels();
+              taxPanel.classList.toggle("is-open");
+              break;
+            }
+            case "check": {
+              closeFloatingPanels();
+              checkPanel.classList.toggle("is-open");
+              break;
+            }
+            case "prep": {
+              closeFloatingPanels();
+              checklistPanel.classList.toggle("is-open");
+              break;
+            }
+            case "top": {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+              setMenuOpen(false);
+              break;
+            }
+            default:
+              break;
+          }
+        });
+
+        // 關閉小面板按鈕
+        document.querySelectorAll(".floating-panel-close").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const type = this.dataset.close;
+            if (type === "sos") {
+              sosPanel.classList.remove("is-open");
+            } else if (type === "bear") {
+              bearPanel.classList.remove("is-open");
+            } else if (type === "map") {
+              mapPanel.classList.remove("is-open");
+            } else if (type === "tax") {
+              taxPanel.classList.remove("is-open");
+            } else if (type === "check") {
+              checkPanel.classList.remove("is-open");
+            } else if (type === "checklist") {
+              checklistPanel.classList.remove("is-open");
+            }
+          });
+        });
+
+        // 點擊頁面其他地方時，關閉選單
+        document.addEventListener("click", function (e) {
+          const insideMenu =
+            e.target.closest(".floating-menu") ||
+            e.target.closest(".floating-panel");
+          if (!insideMenu) {
+            setMenuOpen(false);
+          }
+        });
+
+        const checklistInputs = document.querySelectorAll(
+          "#floatingChecklist input[type='checkbox'][data-id]"
+        );
+        checklistInputs.forEach((input) => {
+          const storageKey = input.dataset.id;
+          input.checked = localStorage.getItem(storageKey) === "true";
+          input.addEventListener("change", function () {
+            localStorage.setItem(storageKey, input.checked);
+          });
+        });
+
+      });
+    </script>
+</body>
+</html>
